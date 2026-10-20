@@ -1,0 +1,9 @@
+﻿numpy
+opencv-python
+scikit-image
+scipy
+scikit-learn
+matplotlib
+pillow
+sounddevice
+soundfile
