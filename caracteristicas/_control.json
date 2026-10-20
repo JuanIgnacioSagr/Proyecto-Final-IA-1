@@ -1,0 +1,806 @@
+{
+ "parametros": {
+  "version": 1,
+  "fs": 16000,
+  "preenfasis": 0.97,
+  "tramo_muestras": 400,
+  "salto_muestras": 160,
+  "n_fft": 512,
+  "n_mel": 40,
+  "fmin_hz": 80,
+  "fmax_hz": 7600,
+  "n_mfcc": 13,
+  "delta_ventana": 2,
+  "segmentos_vector": 4
+ },
+ "archivos": {
+  "identificar/identificar_s1_giuli_001.wav": {
+   "bytes": 37164,
+   "mtime_ns": 1792502283752317900
+  },
+  "identificar/identificar_s1_giuli_002.wav": {
+   "bytes": 29164,
+   "mtime_ns": 1792502283762339100
+  },
+  "identificar/identificar_s1_giuli_003.wav": {
+   "bytes": 9324,
+   "mtime_ns": 1792502283770319900
+  },
+  "identificar/identificar_s1_giuli_004.wav": {
+   "bytes": 32684,
+   "mtime_ns": 1792502283791320500
+  },
+  "identificar/identificar_s1_giuli_005.wav": {
+   "bytes": 32364,
+   "mtime_ns": 1792502283802381300
+  },
+  "identificar/identificar_s1_giuli_006.wav": {
+   "bytes": 31724,
+   "mtime_ns": 1792502283815329400
+  },
+  "identificar/identificar_s1_giuli_007.wav": {
+   "bytes": 41324,
+   "mtime_ns": 1792502283824331200
+  },
+  "identificar/identificar_s1_giuli_008.wav": {
+   "bytes": 30764,
+   "mtime_ns": 1792502283847427200
+  },
+  "identificar/identificar_s1_giuli_009.wav": {
+   "bytes": 34284,
+   "mtime_ns": 1792502283858331600
+  },
+  "identificar/identificar_s1_giuli_010.wav": {
+   "bytes": 34284,
+   "mtime_ns": 1792502283867428600
+  },
+  "identificar/identificar_s1_giuli_011.wav": {
+   "bytes": 35564,
+   "mtime_ns": 1792502283919329900
+  },
+  "identificar/identificar_s1_giuli_012.wav": {
+   "bytes": 35564,
+   "mtime_ns": 1792502283965328200
+  },
+  "identificar/identificar_s1_joaco_001.wav": {
+   "bytes": 25964,
+   "mtime_ns": 1792502283976329300
+  },
+  "identificar/identificar_s1_joaco_002.wav": {
+   "bytes": 23404,
+   "mtime_ns": 1792502283988327900
+  },
+  "identificar/identificar_s1_joaco_003.wav": {
+   "bytes": 25004,
+   "mtime_ns": 1792502284007327100
+  },
+  "identificar/identificar_s1_mama_001.wav": {
+   "bytes": 31084,
+   "mtime_ns": 1792502284016344800
+  },
+  "identificar/identificar_s1_mama_002.wav": {
+   "bytes": 43884,
+   "mtime_ns": 1792502284023356100
+  },
+  "identificar/identificar_s1_mama_003.wav": {
+   "bytes": 34604,
+   "mtime_ns": 1792502284032345300
+  },
+  "identificar/identificar_s1_mama_004.wav": {
+   "bytes": 33324,
+   "mtime_ns": 1792502284051353200
+  },
+  "identificar/identificar_s1_mama_005.wav": {
+   "bytes": 37164,
+   "mtime_ns": 1792502284061355700
+  },
+  "identificar/identificar_s1_mama_006.wav": {
+   "bytes": 34284,
+   "mtime_ns": 1792502284069432700
+  },
+  "identificar/identificar_s1_mama_007.wav": {
+   "bytes": 35884,
+   "mtime_ns": 1792502284089328400
+  },
+  "identificar/identificar_s1_mama_008.wav": {
+   "bytes": 34604,
+   "mtime_ns": 1792502284098432400
+  },
+  "identificar/identificar_s1_mama_009.wav": {
+   "bytes": 36204,
+   "mtime_ns": 1792502284107327500
+  },
+  "identificar/identificar_s1_mili_003.wav": {
+   "bytes": 28524,
+   "mtime_ns": 1792502284117432900
+  },
+  "identificar/identificar_s1_mo_001.wav": {
+   "bytes": 30124,
+   "mtime_ns": 1792502284129346000
+  },
+  "identificar/identificar_s1_mo_002.wav": {
+   "bytes": 41644,
+   "mtime_ns": 1792502284140249000
+  },
+  "identificar/identificar_s1_mo_003.wav": {
+   "bytes": 28204,
+   "mtime_ns": 1792502284148757100
+  },
+  "identificar/identificar_s1_mo_004.wav": {
+   "bytes": 30444,
+   "mtime_ns": 1792502284159464600
+  },
+  "identificar/identificar_s1_mo_005.wav": {
+   "bytes": 43884,
+   "mtime_ns": 1792502284180046900
+  },
+  "identificar/identificar_s1_mo_006.wav": {
+   "bytes": 40684,
+   "mtime_ns": 1792502284190039800
+  },
+  "identificar/identificar_s1_mo_007.wav": {
+   "bytes": 30124,
+   "mtime_ns": 1792502284200132800
+  },
+  "identificar/identificar_s1_mo_008.wav": {
+   "bytes": 30764,
+   "mtime_ns": 1792502284219556100
+  },
+  "identificar/identificar_s1_mo_009.wav": {
+   "bytes": 29164,
+   "mtime_ns": 1792502284229637800
+  },
+  "identificar/identificar_s1_mo_010.wav": {
+   "bytes": 26604,
+   "mtime_ns": 1792502284240604100
+  },
+  "identificar/identificar_s1_normal_001.wav": {
+   "bytes": 29804,
+   "mtime_ns": 1792502284251718600
+  },
+  "identificar/identificar_s1_normal_002.wav": {
+   "bytes": 36204,
+   "mtime_ns": 1792502284263762600
+  },
+  "identificar/identificar_s1_normal_003.wav": {
+   "bytes": 30124,
+   "mtime_ns": 1792502284272359400
+  },
+  "identificar/identificar_s1_normal_004.wav": {
+   "bytes": 35244,
+   "mtime_ns": 1792502284286357600
+  },
+  "identificar/identificar_s1_normal_005.wav": {
+   "bytes": 26284,
+   "mtime_ns": 1792502284297259000
+  },
+  "identificar/identificar_s1_normal_006.wav": {
+   "bytes": 37804,
+   "mtime_ns": 1792502284309972500
+  },
+  "identificar/identificar_s1_normal_007.wav": {
+   "bytes": 41964,
+   "mtime_ns": 1792502284322562000
+  },
+  "identificar/identificar_s1_normal_008.wav": {
+   "bytes": 40364,
+   "mtime_ns": 1792502284345556800
+  },
+  "identificar/identificar_s1_normal_009.wav": {
+   "bytes": 33644,
+   "mtime_ns": 1792502284353460800
+  },
+  "identificar/identificar_s1_normal_010.wav": {
+   "bytes": 40044,
+   "mtime_ns": 1792502284365449600
+  },
+  "identificar/identificar_s1_normal_011.wav": {
+   "bytes": 47084,
+   "mtime_ns": 1792502284384555700
+  },
+  "identificar/identificar_s1_normal_012.wav": {
+   "bytes": 39084,
+   "mtime_ns": 1792502284394453700
+  },
+  "identificar/identificar_s1_normal_013.wav": {
+   "bytes": 39084,
+   "mtime_ns": 1792502284405456000
+  },
+  "identificar/identificar_s1_normal_014.wav": {
+   "bytes": 48044,
+   "mtime_ns": 1792502284417562600
+  },
+  "identificar/identificar_s1_normal_015.wav": {
+   "bytes": 40364,
+   "mtime_ns": 1792502284441468100
+  },
+  "identificar/identificar_s1_normal_016.wav": {
+   "bytes": 37484,
+   "mtime_ns": 1792502284451555700
+  },
+  "identificar/identificar_s1_normal_017.wav": {
+   "bytes": 31724,
+   "mtime_ns": 1792502284474454700
+  },
+  "identificar/identificar_s1_normal_018.wav": {
+   "bytes": 39404,
+   "mtime_ns": 1792502284485611100
+  },
+  "identificar/identificar_s1_normal_019.wav": {
+   "bytes": 37804,
+   "mtime_ns": 1792502284495045600
+  },
+  "identificar/identificar_s1_ruido_001.wav": {
+   "bytes": 28524,
+   "mtime_ns": 1792502284505181500
+  },
+  "identificar/identificar_s1_ruido_002.wav": {
+   "bytes": 30764,
+   "mtime_ns": 1792502284527116700
+  },
+  "identificar/identificar_s1_ruido_003.wav": {
+   "bytes": 36524,
+   "mtime_ns": 1792502284537782900
+  },
+  "identificar/identificar_s1_ruido_004.wav": {
+   "bytes": 28524,
+   "mtime_ns": 1792502284549698000
+  },
+  "identificar/identificar_s1_ruido_005.wav": {
+   "bytes": 28204,
+   "mtime_ns": 1792502284571915000
+  },
+  "identificar/identificar_s1_ruido_006.wav": {
+   "bytes": 27884,
+   "mtime_ns": 1792502284582906500
+  },
+  "identificar/identificar_s1_ruido_007.wav": {
+   "bytes": 27244,
+   "mtime_ns": 1792502284596160800
+  },
+  "identificar/identificar_s1_ruido_008.wav": {
+   "bytes": 27884,
+   "mtime_ns": 1792502284607757400
+  },
+  "identificar/identificar_s1_ruido_009.wav": {
+   "bytes": 29804,
+   "mtime_ns": 1792502284618894800
+  },
+  "identificar/identificar_s1_ruido_010.wav": {
+   "bytes": 29804,
+   "mtime_ns": 1792502284652729100
+  },
+  "identificar/identificar_s1_ruido_011.wav": {
+   "bytes": 40044,
+   "mtime_ns": 1792502284674494600
+  },
+  "identificar/identificar_s1_ruido_012.wav": {
+   "bytes": 30124,
+   "mtime_ns": 1792502284685208300
+  },
+  "identificar/identificar_s1_ruido_013.wav": {
+   "bytes": 28204,
+   "mtime_ns": 1792502284696169500
+  },
+  "identificar/identificar_s1_ruido_014.wav": {
+   "bytes": 31404,
+   "mtime_ns": 1792502284705169700
+  },
+  "identificar/identificar_s1_ruido_015.wav": {
+   "bytes": 29484,
+   "mtime_ns": 1792502284726640800
+  },
+  "identificar/identificar_s1_ruido_016.wav": {
+   "bytes": 31404,
+   "mtime_ns": 1792502284736967800
+  },
+  "identificar/identificar_s1_ruido_017.wav": {
+   "bytes": 28204,
+   "mtime_ns": 1792502284747970400
+  },
+  "reconocer/reconocer_s1_giuli_001.wav": {
+   "bytes": 26284,
+   "mtime_ns": 1792502284759038000
+  },
+  "reconocer/reconocer_s1_giuli_002.wav": {
+   "bytes": 27564,
+   "mtime_ns": 1792502284779759500
+  },
+  "reconocer/reconocer_s1_giuli_003.wav": {
+   "bytes": 33324,
+   "mtime_ns": 1792502284791771000
+  },
+  "reconocer/reconocer_s1_giuli_004.wav": {
+   "bytes": 32684,
+   "mtime_ns": 1792502284812380300
+  },
+  "reconocer/reconocer_s1_giuli_005.wav": {
+   "bytes": 32364,
+   "mtime_ns": 1792502284822084100
+  },
+  "reconocer/reconocer_s1_giuli_006.wav": {
+   "bytes": 26924,
+   "mtime_ns": 1792502284832200200
+  },
+  "reconocer/reconocer_s1_giuli_007.wav": {
+   "bytes": 33324,
+   "mtime_ns": 1792502284841089800
+  },
+  "reconocer/reconocer_s1_giuli_008.wav": {
+   "bytes": 29484,
+   "mtime_ns": 1792502284850590400
+  },
+  "reconocer/reconocer_s1_giuli_009.wav": {
+   "bytes": 41324,
+   "mtime_ns": 1792502284872680000
+  },
+  "reconocer/reconocer_s1_giuli_010.wav": {
+   "bytes": 33004,
+   "mtime_ns": 1792502284884090100
+  },
+  "reconocer/reconocer_s1_joaco_001.wav": {
+   "bytes": 22444,
+   "mtime_ns": 1792502284893221100
+  },
+  "reconocer/reconocer_s1_joaco_002.wav": {
+   "bytes": 17004,
+   "mtime_ns": 1792502284903400300
+  },
+  "reconocer/reconocer_s1_joaco_003.wav": {
+   "bytes": 21484,
+   "mtime_ns": 1792502284923245600
+  },
+  "reconocer/reconocer_s1_mama_001.wav": {
+   "bytes": 31084,
+   "mtime_ns": 1792502284933736600
+  },
+  "reconocer/reconocer_s1_mama_002.wav": {
+   "bytes": 32684,
+   "mtime_ns": 1792502284944608800
+  },
+  "reconocer/reconocer_s1_mama_003.wav": {
+   "bytes": 31404,
+   "mtime_ns": 1792502284954293900
+  },
+  "reconocer/reconocer_s1_mama_004.wav": {
+   "bytes": 33004,
+   "mtime_ns": 1792502284973474500
+  },
+  "reconocer/reconocer_s1_mama_005.wav": {
+   "bytes": 33644,
+   "mtime_ns": 1792502284983618900
+  },
+  "reconocer/reconocer_s1_mama_006.wav": {
+   "bytes": 35564,
+   "mtime_ns": 1792502285005393300
+  },
+  "reconocer/reconocer_s1_mama_007.wav": {
+   "bytes": 35884,
+   "mtime_ns": 1792502285017524000
+  },
+  "reconocer/reconocer_s1_mama_008.wav": {
+   "bytes": 39404,
+   "mtime_ns": 1792502285029794900
+  },
+  "reconocer/reconocer_s1_mama_009.wav": {
+   "bytes": 25324,
+   "mtime_ns": 1792502285050252100
+  },
+  "reconocer/reconocer_s1_mama_010.wav": {
+   "bytes": 19884,
+   "mtime_ns": 1792502285059807300
+  },
+  "reconocer/reconocer_s1_mili_001.wav": {
+   "bytes": 11244,
+   "mtime_ns": 1792502285069899700
+  },
+  "reconocer/reconocer_s1_mili_002.wav": {
+   "bytes": 22764,
+   "mtime_ns": 1792502285079867700
+  },
+  "reconocer/reconocer_s1_mili_003.wav": {
+   "bytes": 26284,
+   "mtime_ns": 1792502285100412800
+  },
+  "reconocer/reconocer_s1_mo_001.wav": {
+   "bytes": 40364,
+   "mtime_ns": 1792502285111277100
+  },
+  "reconocer/reconocer_s1_mo_002.wav": {
+   "bytes": 35884,
+   "mtime_ns": 1792502285121766200
+  },
+  "reconocer/reconocer_s1_mo_003.wav": {
+   "bytes": 33964,
+   "mtime_ns": 1792502285133770500
+  },
+  "reconocer/reconocer_s1_mo_004.wav": {
+   "bytes": 44844,
+   "mtime_ns": 1792502285156278300
+  },
+  "reconocer/reconocer_s1_mo_005.wav": {
+   "bytes": 34604,
+   "mtime_ns": 1792502285167524200
+  },
+  "reconocer/reconocer_s1_mo_006.wav": {
+   "bytes": 27244,
+   "mtime_ns": 1792502285179561700
+  },
+  "reconocer/reconocer_s1_mo_007.wav": {
+   "bytes": 24044,
+   "mtime_ns": 1792502285200281300
+  },
+  "reconocer/reconocer_s1_mo_008.wav": {
+   "bytes": 42284,
+   "mtime_ns": 1792502285210418800
+  },
+  "reconocer/reconocer_s1_mo_009.wav": {
+   "bytes": 30124,
+   "mtime_ns": 1792502285219844800
+  },
+  "reconocer/reconocer_s1_normal_001.wav": {
+   "bytes": 29164,
+   "mtime_ns": 1792502285233191200
+  },
+  "reconocer/reconocer_s1_normal_002.wav": {
+   "bytes": 33324,
+   "mtime_ns": 1792502285245189200
+  },
+  "reconocer/reconocer_s1_normal_003.wav": {
+   "bytes": 36204,
+   "mtime_ns": 1792502285254226300
+  },
+  "reconocer/reconocer_s1_normal_004.wav": {
+   "bytes": 33004,
+   "mtime_ns": 1792502285267326900
+  },
+  "reconocer/reconocer_s1_normal_005.wav": {
+   "bytes": 36524,
+   "mtime_ns": 1792502285277452000
+  },
+  "reconocer/reconocer_s1_normal_006.wav": {
+   "bytes": 30764,
+   "mtime_ns": 1792502285288372400
+  },
+  "reconocer/reconocer_s1_normal_007.wav": {
+   "bytes": 32044,
+   "mtime_ns": 1792502285307703600
+  },
+  "reconocer/reconocer_s1_normal_008.wav": {
+   "bytes": 30444,
+   "mtime_ns": 1792502285318564700
+  },
+  "reconocer/reconocer_s1_normal_009.wav": {
+   "bytes": 31724,
+   "mtime_ns": 1792502285328199700
+  },
+  "reconocer/reconocer_s1_normal_010.wav": {
+   "bytes": 41964,
+   "mtime_ns": 1792502285351237700
+  },
+  "reconocer/reconocer_s1_normal_011.wav": {
+   "bytes": 29484,
+   "mtime_ns": 1792502285361431100
+  },
+  "reconocer/reconocer_s1_normal_012.wav": {
+   "bytes": 30444,
+   "mtime_ns": 1792502285370501900
+  },
+  "reconocer/reconocer_s1_normal_013.wav": {
+   "bytes": 31724,
+   "mtime_ns": 1792502285381840100
+  },
+  "reconocer/reconocer_s1_normal_014.wav": {
+   "bytes": 31724,
+   "mtime_ns": 1792502285401879600
+  },
+  "reconocer/reconocer_s1_normal_015.wav": {
+   "bytes": 22764,
+   "mtime_ns": 1792502285413008600
+  },
+  "reconocer/reconocer_s1_normal_016.wav": {
+   "bytes": 23404,
+   "mtime_ns": 1792502285421876200
+  },
+  "reconocer/reconocer_s1_normal_017.wav": {
+   "bytes": 25324,
+   "mtime_ns": 1792502285432128600
+  },
+  "reconocer/reconocer_s1_normal_018.wav": {
+   "bytes": 19564,
+   "mtime_ns": 1792502285442195400
+  },
+  "reconocer/reconocer_s1_normal_019.wav": {
+   "bytes": 26284,
+   "mtime_ns": 1792502285453245200
+  },
+  "reconocer/reconocer_s1_normal_020.wav": {
+   "bytes": 32684,
+   "mtime_ns": 1792502285462106700
+  },
+  "salir/salir_s1_giuli_001.wav": {
+   "bytes": 22124,
+   "mtime_ns": 1792502285470870100
+  },
+  "salir/salir_s1_giuli_002.wav": {
+   "bytes": 21484,
+   "mtime_ns": 1792502285480588100
+  },
+  "salir/salir_s1_giuli_003.wav": {
+   "bytes": 19884,
+   "mtime_ns": 1792502285501640400
+  },
+  "salir/salir_s1_giuli_004.wav": {
+   "bytes": 19564,
+   "mtime_ns": 1792502285512168100
+  },
+  "salir/salir_s1_giuli_005.wav": {
+   "bytes": 19244,
+   "mtime_ns": 1792502285520159200
+  },
+  "salir/salir_s1_giuli_006.wav": {
+   "bytes": 18284,
+   "mtime_ns": 1792502285529309200
+  },
+  "salir/salir_s1_giuli_007.wav": {
+   "bytes": 22444,
+   "mtime_ns": 1792502285538460200
+  },
+  "salir/salir_s1_giuli_008.wav": {
+   "bytes": 36204,
+   "mtime_ns": 1792502285548474400
+  },
+  "salir/salir_s1_giuli_009.wav": {
+   "bytes": 17964,
+   "mtime_ns": 1792502285561011200
+  },
+  "salir/salir_s1_giuli_010.wav": {
+   "bytes": 37164,
+   "mtime_ns": 1792502285571122800
+  },
+  "salir/salir_s1_giuli_011.wav": {
+   "bytes": 27244,
+   "mtime_ns": 1792502285581121500
+  },
+  "salir/salir_s1_giuli_012.wav": {
+   "bytes": 22764,
+   "mtime_ns": 1792502285590025100
+  },
+  "salir/salir_s1_joaco_001.wav": {
+   "bytes": 13804,
+   "mtime_ns": 1792502285598022600
+  },
+  "salir/salir_s1_joaco_002.wav": {
+   "bytes": 14124,
+   "mtime_ns": 1792502285607022300
+  },
+  "salir/salir_s1_joaco_003.wav": {
+   "bytes": 13804,
+   "mtime_ns": 1792502285617056200
+  },
+  "salir/salir_s1_mama_001.wav": {
+   "bytes": 33324,
+   "mtime_ns": 1792502285627893200
+  },
+  "salir/salir_s1_mama_002.wav": {
+   "bytes": 22124,
+   "mtime_ns": 1792502285636883800
+  },
+  "salir/salir_s1_mama_003.wav": {
+   "bytes": 22444,
+   "mtime_ns": 1792502285648028700
+  },
+  "salir/salir_s1_mama_004.wav": {
+   "bytes": 20844,
+   "mtime_ns": 1792502285656511400
+  },
+  "salir/salir_s1_mama_005.wav": {
+   "bytes": 23404,
+   "mtime_ns": 1792502285675570600
+  },
+  "salir/salir_s1_mama_006.wav": {
+   "bytes": 23084,
+   "mtime_ns": 1792502285685727600
+  },
+  "salir/salir_s1_mama_007.wav": {
+   "bytes": 20204,
+   "mtime_ns": 1792502285693735400
+  },
+  "salir/salir_s1_mama_008.wav": {
+   "bytes": 20844,
+   "mtime_ns": 1792502285704589800
+  },
+  "salir/salir_s1_mama_009.wav": {
+   "bytes": 39724,
+   "mtime_ns": 1792502285714740300
+  },
+  "salir/salir_s1_mama_010.wav": {
+   "bytes": 34924,
+   "mtime_ns": 1792502285725436500
+  },
+  "salir/salir_s1_mili_001.wav": {
+   "bytes": 19564,
+   "mtime_ns": 1792502285734450300
+  },
+  "salir/salir_s1_mili_002.wav": {
+   "bytes": 21164,
+   "mtime_ns": 1792502285746035200
+  },
+  "salir/salir_s1_mili_003.wav": {
+   "bytes": 21804,
+   "mtime_ns": 1792502285766351200
+  },
+  "salir/salir_s1_mo_001.wav": {
+   "bytes": 24044,
+   "mtime_ns": 1792502285776251900
+  },
+  "salir/salir_s1_mo_002.wav": {
+   "bytes": 21804,
+   "mtime_ns": 1792502285786427800
+  },
+  "salir/salir_s1_mo_003.wav": {
+   "bytes": 18924,
+   "mtime_ns": 1792502285805664800
+  },
+  "salir/salir_s1_mo_004.wav": {
+   "bytes": 17644,
+   "mtime_ns": 1792502285815708400
+  },
+  "salir/salir_s1_mo_005.wav": {
+   "bytes": 17644,
+   "mtime_ns": 1792502285824376600
+  },
+  "salir/salir_s1_mo_006.wav": {
+   "bytes": 18924,
+   "mtime_ns": 1792502285833388900
+  },
+  "salir/salir_s1_mo_007.wav": {
+   "bytes": 33324,
+   "mtime_ns": 1792502285855251000
+  },
+  "salir/salir_s1_mo_009.wav": {
+   "bytes": 23084,
+   "mtime_ns": 1792502285865342100
+  },
+  "salir/salir_s1_mo_010.wav": {
+   "bytes": 23084,
+   "mtime_ns": 1792502285873934700
+  },
+  "salir/salir_s1_normal_001.wav": {
+   "bytes": 30124,
+   "mtime_ns": 1792502285883987300
+  },
+  "salir/salir_s1_normal_002.wav": {
+   "bytes": 45484,
+   "mtime_ns": 1792502285904904000
+  },
+  "salir/salir_s1_normal_003.wav": {
+   "bytes": 23724,
+   "mtime_ns": 1792502285912982700
+  },
+  "salir/salir_s1_normal_004.wav": {
+   "bytes": 26284,
+   "mtime_ns": 1792502285922848700
+  },
+  "salir/salir_s1_normal_005.wav": {
+   "bytes": 23724,
+   "mtime_ns": 1792502285941237600
+  },
+  "salir/salir_s1_normal_006.wav": {
+   "bytes": 30124,
+   "mtime_ns": 1792502285950678800
+  },
+  "salir/salir_s1_normal_007.wav": {
+   "bytes": 20204,
+   "mtime_ns": 1792502285971226100
+  },
+  "salir/salir_s1_normal_008.wav": {
+   "bytes": 28844,
+   "mtime_ns": 1792502285985490600
+  },
+  "salir/salir_s1_normal_009.wav": {
+   "bytes": 32044,
+   "mtime_ns": 1792502286002981700
+  },
+  "salir/salir_s1_normal_010.wav": {
+   "bytes": 23084,
+   "mtime_ns": 1792502286033591800
+  },
+  "salir/salir_s1_normal_011.wav": {
+   "bytes": 17324,
+   "mtime_ns": 1792502286043583500
+  },
+  "salir/salir_s1_normal_012.wav": {
+   "bytes": 34604,
+   "mtime_ns": 1792502286054194600
+  },
+  "salir/salir_s1_normal_013.wav": {
+   "bytes": 23084,
+   "mtime_ns": 1792502286063202500
+  },
+  "salir/salir_s1_normal_014.wav": {
+   "bytes": 37164,
+   "mtime_ns": 1792502286083253800
+  },
+  "salir/salir_s1_normal_015.wav": {
+   "bytes": 43564,
+   "mtime_ns": 1792502286095773100
+  },
+  "salir/salir_s1_normal_016.wav": {
+   "bytes": 40684,
+   "mtime_ns": 1792502286118592900
+  },
+  "salir/salir_s1_normal_017.wav": {
+   "bytes": 22124,
+   "mtime_ns": 1792502286130066400
+  },
+  "salir/salir_s1_normal_018.wav": {
+   "bytes": 37164,
+   "mtime_ns": 1792502286138321800
+  },
+  "salir/salir_s1_normal_019.wav": {
+   "bytes": 25004,
+   "mtime_ns": 1792502286149447900
+  },
+  "identificar/identificar_s1_maxi_001.wav": {
+   "bytes": 30764,
+   "mtime_ns": 1792506482231929100
+  },
+  "identificar/identificar_s1_maxi_002.wav": {
+   "bytes": 27244,
+   "mtime_ns": 1792506482244925800
+  },
+  "identificar/identificar_s1_maxi_003.wav": {
+   "bytes": 24364,
+   "mtime_ns": 1792506482255063200
+  },
+  "identificar/identificar_s1_maxi_004.wav": {
+   "bytes": 23404,
+   "mtime_ns": 1792506482271058900
+  },
+  "identificar/identificar_s1_maxi_005.wav": {
+   "bytes": 24364,
+   "mtime_ns": 1792506482281925600
+  },
+  "reconocer/reconocer_s1_maxi_001.wav": {
+   "bytes": 24044,
+   "mtime_ns": 1792506482300542000
+  },
+  "reconocer/reconocer_s1_maxi_002.wav": {
+   "bytes": 21484,
+   "mtime_ns": 1792506482318537100
+  },
+  "reconocer/reconocer_s1_maxi_003.wav": {
+   "bytes": 19244,
+   "mtime_ns": 1792506482337538600
+  },
+  "reconocer/reconocer_s1_maxi_004.wav": {
+   "bytes": 24684,
+   "mtime_ns": 1792506482354965900
+  },
+  "reconocer/reconocer_s1_maxi_005.wav": {
+   "bytes": 22124,
+   "mtime_ns": 1792506482372060700
+  },
+  "salir/salir_s1_maxi_001.wav": {
+   "bytes": 16044,
+   "mtime_ns": 1792506482386056400
+  },
+  "salir/salir_s1_maxi_002.wav": {
+   "bytes": 12844,
+   "mtime_ns": 1792506482403125000
+  },
+  "salir/salir_s1_maxi_003.wav": {
+   "bytes": 14444,
+   "mtime_ns": 1792506482417785500
+  },
+  "salir/salir_s1_maxi_004.wav": {
+   "bytes": 17644,
+   "mtime_ns": 1792506482432678200
+  },
+  "salir/salir_s1_maxi_005.wav": {
+   "bytes": 14764,
+   "mtime_ns": 1792506482447689100
+  }
+ }
+}

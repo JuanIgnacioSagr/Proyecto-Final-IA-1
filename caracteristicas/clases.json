@@ -1,0 +1,6 @@
+{
+  "reconocer": 0,
+  "identificar": 1,
+  "salir": 2,
+  "otros": 3
+}

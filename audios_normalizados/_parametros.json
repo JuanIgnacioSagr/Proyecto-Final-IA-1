@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "fs": 16000,
+  "banda_hz": [
+    80,
+    7000
+  ],
+  "orden_butterworth": 4,
+  "vad_tramo_ms": 20,
+  "vad_salto_ms": 10,
+  "vad_margen_ms": 100,
+  "vad_min_racha_ms": 60,
+  "vad_sobre_piso_db": 12,
+  "vad_bajo_ref_db": 30,
+  "vad_min_dinamica_db": 15,
+  "rms_objetivo_dbfs": -20.0,
+  "ganancia_max_db": 30.0,
+  "pico_max": 0.99
+}
