@@ -1,0 +1,17 @@
+vamos con la etapa de knn yb k-mean quiro que quede bien documentado(en un documento.md "Teoria metodos y forma implementada en el codigo " el documento esta orientado a que yi pueda explicar estos metodos) 
+y bien comentado a en el codigo , en el documento tambien explicita los grafic que eutilizan , definicion de clusyer y centroides
+
+hace script k-measn para huella y k-nnpara para vos 
+Elegir Aleatoriamente K No Supervisado 
+
+Ver el grafico de centroides y clusters 
+se lo usa midiendo la distancia eucladiana 
+parte de la reasignacion 
+
+
+KNN - supervisada
+Asignar los 3 conjuntos d edatos (entrenamiento-validacion-conjuntode prueba)
+conjunto de entrenamiento, conjunto de vectores con identificación de la clase asociada a la
+
+2-vector, se calcula la Distancia Euclideana a todos los vectores entrenamiento y nos quedamos con las “K” muestras mas cercanas, clasificando la muestra de entrenamiento en la clase más frecuente a la que pertenecen los “K” vecinos obtenidos anteriormente.
+3- Luego se realiza el mismo proceso con los datos de validacion calcula el porcentaje de clasificación sobre los ejemplos de este conjunto (desconocidos en la tarea de aprendizaje) para conocer su poder de generalización.

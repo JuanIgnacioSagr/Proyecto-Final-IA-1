@@ -18,6 +18,7 @@ import numpy as np
 from scipy import ndimage
 
 CANVAS_HW = (448, 320)  # alto, ancho del lienzo de salida
+MARGEN_CENTRO = 0.10    # el centro estimado de la huella debe caer entre el 10 % y el 90 % del cuadro (ver alinear)
 METODO_DEFECTO = "D"
 METODOS = ("A", "B", "C", "D", "E")
 
@@ -131,6 +132,17 @@ def alinear(g, mask):
     # Casi redonda, ya vertical, o angulo absurdo (> 35 deg: mas que cualquier
     # giro esperable de un dedo) => no rotar.
     if excentricidad < 1.15 or abs(delta) < 2.0 or abs(delta) > 35.0:
+        delta = 0.0
+    # GUARDA DE PLAUSIBILIDAD (arregla la falla con huellas trasladadas): si la huella esta muy cortada por el
+    # borde, la elipse ajustada a la parte visible del contorno puede dar un centro IMPOSIBLE (fuera del cuadro,
+    # p. ej. x = 287 en una imagen de 275 px) y un giro falso. Con un centro asi la huella quedaba girada, cortada
+    # y en una esquina del lienzo. En ese caso la estimacion no es confiable: no se gira y se centra con el centroide
+    # de la parte visible de la mascara (es sesgado, pero siempre cae dentro del cuadro).
+    alto, ancho = mask.shape
+    if not (MARGEN_CENTRO * ancho < cx < (1 - MARGEN_CENTRO) * ancho
+            and MARGEN_CENTRO * alto < cy < (1 - MARGEN_CENTRO) * alto):
+        M0 = cv2.moments(mask, binaryImage=True)
+        cx, cy = M0["m10"] / M0["m00"], M0["m01"] / M0["m00"]
         delta = 0.0
     h, w = CANVAS_HW
     M = cv2.getRotationMatrix2D((cx, cy), delta, 1.0)
