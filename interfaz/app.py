@@ -68,6 +68,9 @@ class App(tk.Tk):
         self.prueba = prueba
         self.cola = queue.Queue()                         # los hilos dejan aca sus resultados; la ventana los lee
         self.ocupado = False                              # True mientras corre Anguli o el microfono
+        self._progreso = None                             # (hora de inicio, segundos estimados, tarea) mientras hay una barra en marcha
+        # duracion tipica de cada tarea (s); se va corrigiendo con lo que tardo de verdad (promedio de las ultimas 5)
+        self.duraciones = {"identidad": [3.0], "intruso": [10.0], "voz": [4.0]}
 
         # ---- estado del flujo ----
         self.ruta = None            # imagen de la huella actual
@@ -138,6 +141,8 @@ class App(tk.Tk):
         self.btn_existente.pack(fill="x", pady=(8, 0))
         self.barra = ttk.Progressbar(c, mode="determinate", value=0, style="Moderno.Horizontal.TProgressbar")
         self.barra.pack(fill="x", pady=(16, 0))
+        self.lbl_tiempo = etiqueta(c, "", suave=True, tam=9)         # "Quedan ~7 s" mientras corre la barra
+        self.lbl_tiempo.pack(anchor="w", pady=(4, 0))
         self.lbl_estado_huella = etiqueta(c, "Sin huella todavía.", suave=True, wraplength=210, justify="left")
         self.lbl_estado_huella.pack(anchor="w", pady=(8, 0))
         etiqueta(c, "Un intruso es una persona nueva:\ntarda unos segundos más.", suave=True, tam=8, justify="left").pack(anchor="w", pady=(10, 0))
@@ -220,19 +225,52 @@ class App(tk.Tk):
                 self._fotos[clave] = a_tk(img)
             lbl.configure(image=self._fotos[clave])
 
-    def _bloquear(self, ocupado, mensaje=None):
+    def _bloquear(self, ocupado, mensaje=None, tarea=None, exito=False):
+        """Bloquea/desbloquea los botones y maneja la barra de progreso con tiempo restante.
+
+        tarea  'identidad' | 'intruso' | 'voz': al empezar, la barra se arma con lo que suele tardar esa tarea;
+        exito  al terminar bien, se guarda lo que tardo de verdad para que la proxima estimacion sea mas precisa.
+        """
         self.ocupado = ocupado
         estado = "disabled" if ocupado else "normal"
         for b in (self.btn_generar, self.btn_existente, self.btn_hablar, *self.botones_cmd.values()):
             b.configure(state=estado)
         if ocupado:
-            self.barra.configure(mode="indeterminate")
-            self.barra.start(12)
+            lista = self.duraciones.get(tarea or "", [4.0])
+            self._progreso = (time.time(), sum(lista) / len(lista), tarea)
+            self._tick_progreso()
         else:
-            self.barra.stop()
-            self.barra.configure(mode="determinate", value=0)       # en reposo queda vacia
+            self._terminar_progreso(exito)
         if mensaje:
             self.lbl_estado_huella.configure(text=mensaje)
+
+    def _tick_progreso(self):
+        """Cada 100 ms: avanza la barra segun el tiempo transcurrido y escribe cuanto falta (estimado)."""
+        if self._progreso is None:
+            return
+        t0, est, _ = self._progreso
+        el = time.time() - t0
+        if el < est:
+            pct, texto = 95 * el / est, f"Quedan ~{int(est - el) + 1} s"
+        else:                                           # tarda mas de lo previsto: la barra avanza muy despacio hasta 99 %
+            pct, texto = 95 + 4 * min(1.0, (el - est) / 10), "Casi listo…"
+        self.barra.configure(mode="determinate", value=pct)
+        self.lbl_tiempo.configure(text=f"{texto}  ({el:.0f} s de ~{est:.0f} s)")
+        self.after(100, self._tick_progreso)
+
+    def _terminar_progreso(self, exito):
+        if self._progreso is not None:
+            t0, _, tarea = self._progreso
+            el = time.time() - t0
+            self._progreso = None
+            if exito and tarea in self.duraciones:
+                self.duraciones[tarea] = (self.duraciones[tarea] + [el])[-5:]
+                self.barra.configure(value=100)
+                self.lbl_tiempo.configure(text=f"Listo en {el:.1f} s")
+                self.after(900, lambda: self.barra.configure(value=0) if self._progreso is None else None)
+                return
+        self.barra.configure(value=0)
+        self.lbl_tiempo.configure(text="")
 
     def _resultado(self, texto, tono, detalle=""):
         self.insignia.poner(texto, tono)
@@ -257,7 +295,7 @@ class App(tk.Tk):
             return
         tipo, nombre_filtro = self.var_tipo.get(), self.var_filtro.get()
         aviso = " (persona nueva, tarda unos segundos)" if tipo == "intruso" else ""
-        self._bloquear(True, f"Generando {anguli.TIPOS[tipo]} con Anguli…{aviso}")
+        self._bloquear(True, f"Generando {anguli.TIPOS[tipo]} con Anguli…{aviso}", tarea="intruso" if tipo == "intruso" else "identidad")
         self.log(f"Anguli: generando {anguli.TIPOS[tipo]} · filtro '{nombre_filtro}'…")
 
         def trabajo():
@@ -301,7 +339,7 @@ class App(tk.Tk):
         """Cuenta regresiva, graba 1,5 s y clasifica el comando (todo en un hilo)."""
         if self.ocupado:
             return
-        self._bloquear(True)
+        self._bloquear(True, tarea="voz")
         self.lbl_voz.configure(text="Preparate…")
 
         def trabajo():
@@ -412,7 +450,7 @@ class App(tk.Tk):
         self.after(100, self._leer_cola)
 
     def _evento_generada(self, r):
-        self._bloquear(False)
+        self._bloquear(False, exito=True)
         self.log(f"Anguli generó {r['ruta'].name} en {r['segundos']:.1f} s · filtro: {anguli.describir_filtro(r['filtro'])}.")
         self.cargar_huella(r["ruta"], origen=r["tipo"], filtro_txt=anguli.describir_filtro(r["filtro"]))
 
@@ -432,7 +470,7 @@ class App(tk.Tk):
         self.lbl_voz.configure(text=texto)
 
     def _evento_voz(self, res):
-        self._bloquear(False)
+        self._bloquear(False, exito=True)
         comando, mensaje = self.srv.comando_ejecutable(res)
         self.lbl_voz.configure(text=mensaje)
         self.log("Voz: " + mensaje)

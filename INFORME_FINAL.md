@@ -94,6 +94,8 @@ Una imagen no se puede comparar directamente; hay que resumirla en una **lista d
 
 > Total: 24 + 4 × 12 = **72 números por huella**.
 
+![Histograma de orientación de las crestas](explicativos/imagenes/histograma_orientacion.png)
+
 ### e) Aplicación de K-means
 **K-means** agrupa vectores parecidos en **clusters** (grupos), cada uno con un **centroide** (el "centro" del grupo, el promedio de sus vectores). **No usa las etiquetas** (no sabe de quién es cada huella): agrupa solo por parecido, midiendo la **distancia euclídea** entre vectores.
 
@@ -183,10 +185,16 @@ Un audio no se puede comparar directamente (son miles de valores y dos personas 
 
 *Por qué 13 MFCC:* es el tamaño estándar en reconocimiento de voz; alcanza para describir el timbre y más coeficientes agregan solo detalle fino y ruido. *Por qué 91:* con K = 3 y dejando afuera una persona entera en cada prueba, la media de los 13 MFCC acierta 50 %; media + desvío, 69 %; **4 cuartos + desvío (los 91), 87 %**; y con la **secuencia completa y DTW, 98 %**.
 
+![Caracterización de un audio: tramos y vector de 91](explicativos/imagenes/tramos_audio.png)
+
 ### e) Qué es DTW (Dynamic Time Warping)
 Para comparar dos audios hay que compararlos tramo a tramo, pero **la misma palabra dicha más rápido o más lento tiene distinta cantidad de tramos**, y comparar el tramo 1 con el 1, el 2 con el 2... falla. **DTW alinea las dos secuencias "estirando" o "encogiendo" el tiempo** para que cada parte de una palabra se corresponda con la misma parte de la otra (la "r" con la "r", la "e" con la "e"), y suma lo que cuesta ese alineamiento. **Cuanto menor el resultado, más parecidos son los audios**, aunque hayan durado distinto. Es una distancia entre dos secuencias, y se usa en lugar de la euclídea clásica.
 
 ![Distancia DTW](flujos/imagenes/03_dtw.png)
+
+**Diferencia con la distancia euclídea:** la euclídea compara posición por posición, $d=\sqrt{\sum_i (a_i-b_i)^2}$, y exige que los dos audios tengan el mismo largo (por eso usa el vector fijo de 91 números). El DTW calcula una tabla de costos $D[i][j] = d(a_i, b_j) + \min(D[i-1][j-1],\, D[i-1][j],\, D[i][j-1])$ y toma el camino de menor costo, de modo que cada tramo de un audio se empareja con el que mejor le corresponde del otro.
+
+![Euclídea vs DTW](explicativos/imagenes/dtw_vs_euclidea.png)
 
 ### f) Aplicación: KNN (K vecinos más cercanos)
 **KNN no "aprende" una fórmula:** guarda los ejemplos de entrenamiento y, para clasificar uno nuevo, **mira a quiénes se parece más y copia lo que ellos son**. Es como preguntarle a los K vecinos más parecidos: **gana la clase que más se repite**.
@@ -384,8 +392,10 @@ $$\text{Exactitud}_e = \frac{A_e}{T_e}$$
 
 | Radio R | Autorizadas rechazadas (FRR) | Intrusos aceptados (FAR) |
 |---|---|---|
-| 0,31 | 15,9 % | 4,2 % |
-| **0,42 (aplicado)** | **4,3 %** | **8,3 %** (2 de 24) |
+| 0,31 | 23,5 % (12 de 51) | 0 % (0 de 24) |
+| **0,42 (aplicado)** | **11,8 %** (6 de 51) | **4,2 %** (1 de 24) |
+
+*(51 autorizadas: 36 de prueba del dataset y 15 subidas a mano; 24 intrusos: 6 subidos a mano y 18 generados con Anguli. Con los 18 intrusos de Anguli, que no se usaron para elegir R, entró 1 de 18, es decir 5,6 %.)*
 
 $$d(\mathbf{x}) = \min_{k}\ \lVert \mathbf{x} - \mathbf{c}_k \rVert_2 \qquad
 \text{Decisión} = \begin{cases}\text{identidad del cluster más cercano} & d(\mathbf{x}) \le R \\ \text{NO AUTORIZADO} & d(\mathbf{x}) > R\end{cases}$$
@@ -451,6 +461,14 @@ $$\text{Exactitud} = \frac{\text{audios con el comando correcto}}{\text{total de
 - Audios con el comando correcto: audios cuya predicción del KNN coincide con el comando dicho.
 - Total de audios clasificados: audios crudos evaluados (60).
 
+### Huellas con intrusos: matriz de confusión de 4 salidas
+
+Se evalúa después de entrenar el K-means y fijar el umbral. Cada huella se procesa como en el agente, se calcula su distancia (con los **72 números completos**, no con el PCA) al centroide más cercano y se la acepta si la distancia es menor o igual a R; si no, es "NO AUTORIZADO". Las filas son lo que la huella es (identidad 1, 2, 3 o intruso) y las columnas lo que respondió el sistema. Se usaron 51 autorizadas (36 de prueba del dataset y 15 subidas a mano) y 24 intrusos (6 subidos a mano y 18 generados con Anguli).
+
+![Matriz de confusión con intrusos](explicativos/imagenes/matriz_confusion_intrusos.png)
+
+![Intrusos fuera del umbral](explicativos/imagenes/intrusos_fuera_umbral.png)
+
 ## 3.4 Análisis por componentes principales (PCA)
 
 El PCA reduce los vectores (72 números en huellas, 91 en audios) a 2 o 3 componentes **solo para poder dibujarlos**; la clasificación usa todos los números.
@@ -485,7 +503,7 @@ El PCA reduce los vectores (72 números en huellas, 91 en audios) a 2 o 3 compon
 ## 3.5 Comentario de los resultados
 
 - **Huellas:** en el PCA se ven **tres grupos, uno por identidad**, y los efectos (rotación, ruido, rayones, traslación) casi no los mezclan. Por eso K-means acierta 88,9 % en prueba. El único efecto que rompe la separación es `matada` (traslación de 100 px con corte de la huella): solo la mitad se asigna bien. Es una limitación del método, que depende de ver la mayor parte de la huella.
-- **Umbral:** hay un compromiso entre los dos errores. Un radio mayor (0,42) rechaza menos autorizadas (4,3 % contra 15,9 %) pero deja pasar más intrusos (8,3 % contra 4,2 %). Con intrusos simulados dentro del mismo dataset un radio tan grande dejaría entrar a la mayoría (70 %), así que el valor se apoya en los intrusos reales de Anguli y conviene seguir sumando ejemplos.
+- **Umbral:** hay un compromiso entre los dos errores. Un radio mayor (0,42) rechaza menos autorizadas (11,8 % contra 23,5 %) pero deja pasar algún intruso (4,2 % contra 0 %). Con intrusos simulados dentro del mismo dataset un radio tan grande dejaría entrar a la mayoría (70 %), así que el valor se apoya en los intrusos reales de Anguli y conviene seguir sumando ejemplos.
 - **Voz:** en el PCA los **tres comandos se solapan** y el eje principal separa más por **quién habla** que por qué comando se dice. Eso no implica que el KNN se confunda, porque usa los 91 números o la secuencia completa. La distancia DTW (100 % en validación) superó a la euclídea (94,7 %); lo que más aportó fue conservar la **secuencia temporal**. Los 2 errores de la prueba son audios de *reconocer*.
 - **Alcance de los números:** la prueba de voz tiene solo 22 audios (cada error pesa 4,5 puntos) y la de huellas 36; son estimaciones con pocos datos. Además, el KNN siempre elige uno de los tres comandos (no hay clase "otros"), por lo que la interfaz solo ejecuta un comando cuando los 3 vecinos coinciden.
 
