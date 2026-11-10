@@ -2,11 +2,11 @@
 
 Que hace
 --------
-1. Toma las imagenes de la carpeta  huellas_nuevas/  (la llenas vos, se puede ir agregando de a poco).
+1. Toma las imagenes de la carpeta  dataset_huellas/pruebas_manuales/huellas_nuevas/  (la llenas vos, se puede ir agregando de a poco).
 2. A cada imagen NUEVA le aplica todo el pipeline:
-       preprocesar_huella  ->  rasgo_orientacion (72 numeros)  ->  centroide mas cercano + umbral
+       preprocesar_huella  ->  rasgo_huella (104 numeros)  ->  centroide mas cercano + umbral
    y dice si la huella fue ACEPTADA (con que identidad) o RECHAZADA ("NO AUTORIZADO").
-3. Te pregunta si el resultado es correcto (tu feedback) y lo guarda en  pruebas_huellas/registro.csv.
+3. Te pregunta si el resultado es correcto (tu feedback) y lo guarda en  dataset_huellas/pruebas_manuales/registro.csv.
 4. Con --calibrar usa ese feedback (huellas reales de intrusos y de autorizadas) para calcular
    que radio de aceptacion equilibra los errores y sugiere como aplicarlo.
 
@@ -26,7 +26,7 @@ por ejemplo:  id2_rotada_01.jpg   intruso_03.png
 Respuestas al feedback:  s = correcto | n = incorrecto | 1, 2, 3 = era esa identidad | i = era un intruso |
                          ENTER = saltar | q = terminar
 
-Nunca se modifica ni se borra nada de huellas_nuevas/ ni del dataset original.
+Nunca se modifica ni se borra nada de dataset_huellas/pruebas_manuales/huellas_nuevas/ ni del dataset original.
 """
 import argparse
 import csv
@@ -44,15 +44,15 @@ import kmeans_huellas as KH
 import preprocesar as P
 
 RAIZ = Path(__file__).resolve().parent.parent
-ENTRADA = RAIZ / "huellas_nuevas"
-SALIDA = RAIZ / "pruebas_huellas"
+ENTRADA = RAIZ / "dataset_huellas" / "pruebas_manuales" / "huellas_nuevas"
+SALIDA = RAIZ / "dataset_huellas" / "pruebas_manuales"
 EXTENSIONES = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"}
 TAMANO_ESPERADO = (275, 400)                      # ancho x alto de las huellas del dataset
 IDENTIDADES = ["identidad_1", "identidad_2", "identidad_3"]
 INTRUSO = "intruso"
 CAMPOS = ["archivo", "bytes", "mtime_ns", "fecha", "resultado", "identidad_cercana", "distancia", "radio",
           "d_identidad_1", "d_identidad_2", "d_identidad_3", "verdad", "correcto"]
-GRILLA_RADIO = np.round(np.arange(0.10, 0.601, 0.01), 2)
+GRILLA_RADIO = np.round(np.geomspace(0.5, 100, 300), 2)       # umbrales lambda candidatos (el puntaje s va de ~0,1 a ~100)
 MINIMO_PARA_CALIBRAR = 5                          # muestras de autorizadas y de intrusos para fiarse del resultado
 
 
@@ -103,7 +103,7 @@ def evaluar_imagen(ruta, modelo, carpeta_previas):
     """Aplica el pipeline a una imagen. Devuelve (fila_para_el_registro, detalle). Guarda una imagen de revision."""
     gris = P.a_gris(ruta)
     binaria = P.preprocesar_huella(gris)                 # gris -> alinear -> filtrar -> binarizar
-    vector = CH.rasgo_orientacion(binaria)               # 72 numeros
+    vector = CH.rasgo_huella(binaria)               # 104 numeros normalizados
     r = KH.identificar_huella_detalle(vector, modelo)    # centroide mas cercano + umbral
     st = ruta.stat()
     fila = {"archivo": ruta.name, "bytes": st.st_size, "mtime_ns": st.st_mtime_ns,
@@ -215,7 +215,7 @@ def calibrar(registro, radio_actual):
     print(f"Huellas con feedback: {len(filas)}  (autorizadas: {len(aut)}, intrusas: {len(intr)})")
     if not aut or not intr:
         print("Para calibrar hacen falta AMBOS tipos: huellas de personas autorizadas e intrusas con su respuesta.")
-        print("Subi mas a huellas_nuevas/ (por ejemplo id2_01.jpg, intruso_01.jpg) y volve a correr.")
+        print("Subi mas a dataset_huellas/pruebas_manuales/huellas_nuevas/ (por ejemplo id2_01.jpg, intruso_01.jpg) y volve a correr.")
         return
     d_aut = np.array([float(f["distancia"]) for f in aut])
     cerca_aut = np.array([f["identidad_cercana"] for f in aut])
@@ -224,10 +224,10 @@ def calibrar(registro, radio_actual):
     frr = np.array([(d_aut > R).mean() for R in GRILLA_RADIO])                          # autorizadas rechazadas
     otra = np.array([((d_aut <= R) & (cerca_aut != verdad_aut)).mean() for R in GRILLA_RADIO])   # aceptadas con otra identidad
     far = np.array([(d_int <= R).mean() for R in GRILLA_RADIO])                         # intrusos aceptados
-    lo, hi = min(d_aut.min(), d_int.min()) - 0.03, max(d_aut.max(), d_int.max()) + 0.03
+    lo, hi = min(d_aut.min(), d_int.min()) * 0.8, max(d_aut.max(), d_int.max()) * 1.2
     print("\n   radio R | autorizadas rechazadas | aceptadas con otra identidad | intrusos aceptados")
     for i, R in enumerate(GRILLA_RADIO):
-        if lo <= R <= hi and int(round(R * 100)) % 2 == 0:
+        if lo <= R <= hi and i % 6 == 0:
             marca = "  <- radio actual" if abs(R - radio_actual) < 0.005 else ""
             print(f"    {R:.2f}   |        {frr[i] * 100:5.1f}%         |           {otra[i] * 100:5.1f}%           |      {far[i] * 100:5.1f}%{marca}")
     i_act = int(np.argmin(np.abs(GRILLA_RADIO - radio_actual)))
@@ -254,8 +254,8 @@ def aplicar_radio(radio):
     --calibrar solo CALCULA y sugiere un radio; esta funcion es la que realmente lo cambia. La interfaz y
     probar_huellas usan el radio guardado en modelo_kmeans.npz, asi que el cambio rige desde la proxima ejecucion.
     """
-    if not 0.05 <= radio <= 1.5:
-        sys.exit(f"Radio fuera de rango razonable (0,05 a 1,5): {radio}")
+    if not 0.1 <= radio <= 500:
+        sys.exit(f"Umbral fuera de rango razonable (0,1 a 500): {radio}")
     modelo = {k: v for k, v in np.load(KH.RUTA_MODELO, allow_pickle=False).items()}
     anterior = float(modelo["radios"][0])
     modelo["radios"] = np.full(len(modelo["radios"]), radio)

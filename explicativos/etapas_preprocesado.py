@@ -29,7 +29,7 @@ plt.rcParams["font.family"] = ["Segoe UI", "DejaVu Sans"]
 def elegir_huella():
     """La impresion de 'primera' (giro, traslacion, rayones y ruido) de la identidad 2 con mas giro."""
     mejor, mejor_ang = None, -1
-    for ruta in sorted((RAIZ / "huellasDactilares" / "impresionPrimera" / "id2").glob("*.jpg")):
+    for ruta in sorted((RAIZ / "dataset_huellas" / "base" / "impresionPrimera" / "id2").glob("*.jpg")):
         g = P.normalizar(P.a_gris(ruta))
         _, _, ang = P.alinear(g, P.mascara_roi(g))
         if abs(ang) > mejor_ang:

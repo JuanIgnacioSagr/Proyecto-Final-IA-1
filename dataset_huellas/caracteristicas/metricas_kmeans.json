@@ -1,0 +1,208 @@
+{
+  "entrenamiento": {
+    "exactitud": 1.0,
+    "tasa_error": 0.0,
+    "precision": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "recall": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "f1": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "soporte": [
+      33,
+      33,
+      33
+    ],
+    "f1_macro": 1.0,
+    "n": 99,
+    "matriz_confusion": [
+      [
+        33,
+        0,
+        0
+      ],
+      [
+        0,
+        33,
+        0
+      ],
+      [
+        0,
+        0,
+        33
+      ]
+    ],
+    "falso_rechazo": 0.010101010101010102
+  },
+  "validacion": {
+    "exactitud": 1.0,
+    "tasa_error": 0.0,
+    "precision": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "recall": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "f1": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "soporte": [
+      11,
+      11,
+      11
+    ],
+    "f1_macro": 1.0,
+    "n": 33,
+    "matriz_confusion": [
+      [
+        11,
+        0,
+        0
+      ],
+      [
+        0,
+        11,
+        0
+      ],
+      [
+        0,
+        0,
+        11
+      ]
+    ],
+    "falso_rechazo": 0.0
+  },
+  "prueba": {
+    "exactitud": 1.0,
+    "tasa_error": 0.0,
+    "precision": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "recall": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "f1": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "soporte": [
+      11,
+      11,
+      11
+    ],
+    "f1_macro": 1.0,
+    "n": 33,
+    "matriz_confusion": [
+      [
+        11,
+        0,
+        0
+      ],
+      [
+        0,
+        11,
+        0
+      ],
+      [
+        0,
+        0,
+        11
+      ]
+    ],
+    "falso_rechazo": 0.06060606060606061
+  },
+  "k": 3,
+  "semilla": 0,
+  "reinicios": 10,
+  "inercia": 2.2021560007568333,
+  "vueltas": 2,
+  "regla": "PCA + T2 (Mahalanobis) + Q (residuo)",
+  "lambda": 1.48,
+  "lambda_calibrado": 1.48,
+  "componentes": 6,
+  "varianza_explicada": 0.904489282367821,
+  "limite_t2": 9.162351288427962,
+  "limite_q": 0.02729795693023852,
+  "limite_t2_teorico": 18.016902259429173,
+  "limite_q_teorico": 0.016321445458171577,
+  "conjuntos": {
+    "entrenamiento": 99,
+    "validacion": 33,
+    "prueba": 33,
+    "intrusos_calibracion": 25,
+    "intrusos_prueba": 25
+  },
+  "intrusos": {
+    "far_calibracion": 0.0,
+    "far_prueba": 0.0,
+    "matriz_prueba_con_intrusos": [
+      [
+        10,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        10,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        11,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        25
+      ]
+    ]
+  },
+  "excluidos_del_entrenamiento": [],
+  "cluster_a_identidad": {
+    "0": "identidad_2",
+    "1": "identidad_1",
+    "2": "identidad_3"
+  },
+  "exactitud_por_efecto_entrenamiento_validacion_prueba": {
+    "debil": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "medio": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "primera": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  }
+}

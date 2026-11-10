@@ -9,15 +9,15 @@ Que hace este script
      - prueba: se usa UNA sola vez al final para medir el poder de generalizacion real.
 3. Clasifica cada audio con KNN: calcula la distancia a todos los de referencia, toma los K
    mas cercanos y elige el comando mas frecuente entre ellos.
-4. Compara dos distancias: EUCLIDEA (sobre el vector de 91 numeros) y DTW (sobre la secuencia
-   completa, que tolera que una palabra se diga mas rapido o mas lento).
+4. Usa la distancia EUCLIDEA sobre el vector de 91 numeros (decision del proyecto). DTW sigue disponible con
+   --distancia dtw solo para comparar (explicativos/dtw_*.py), pero ya no es la que usa el modelo.
 5. Muestra matrices de confusion y metricas de error, guarda el modelo y dibuja los graficos.
 
 Los PASOS estan numerados igual que en el documento "Teoria metodos y forma implementada en el codigo.md".
 
 Uso:
     python src/knn_audios.py
-    python src/knn_audios.py --validacion mama,joaco --prueba maxi,mili --distancia dtw
+    python src/knn_audios.py --validacion mama,joaco --prueba maxi,mili --distancia euclidea
 """
 import argparse
 import json
@@ -34,7 +34,7 @@ import metricas
 import normalizar_audios as NA
 
 RAIZ = Path(__file__).resolve().parent.parent
-CARPETA = RAIZ / "caracteristicas"
+CARPETA = RAIZ / "dataset_audios" / "caracteristicas"
 RUTA_MODELO = CARPETA / "modelo_knn.npz"
 
 # ----------------------------- parametros del metodo -----------------------------
@@ -236,8 +236,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--validacion", default=SESIONES_VALIDACION, help="sesiones (personas) para validar K y la distancia")
     ap.add_argument("--prueba", default=SESIONES_PRUEBA, help="sesiones (personas) reservadas para la prueba final")
-    ap.add_argument("--distancia", choices=["auto", "euclidea", "dtw"], default="auto",
-                    help="auto = probar las dos y quedarse con la mejor en validacion")
+    ap.add_argument("--distancia", choices=["euclidea", "dtw"], default="euclidea",
+                    help="euclidea (por defecto, la que usa el proyecto) o dtw (solo para comparar)")
     a = ap.parse_args()
 
     # ---------------- datos ----------------
@@ -268,7 +268,7 @@ def main():
 
     # ---------------- PASOS 2 y 3: elegir distancia y K con la VALIDACION ----------------
     ks = [k for k in VALORES_K if k <= len(idx_train)]
-    distancias_probar = ["euclidea", "dtw"] if a.distancia == "auto" else [a.distancia]
+    distancias_probar = [a.distancia]
     tabla, D_val = {}, {}
     print("\nPASO 2 y 3 - exactitud en VALIDACION (referencia = entrenamiento) segun K:")
     print("   distancia   " + "".join(f"K={k:<5}" for k in ks))

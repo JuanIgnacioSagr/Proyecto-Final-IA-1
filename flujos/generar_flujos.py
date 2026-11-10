@@ -115,8 +115,8 @@ def flujo_general(svg):
     etapas = [("Percepción", "huella: imagen\nvoz: audio 1,5 s", AZUL),
               ("Acondicionamiento", "huella: normalizar\ny alinear\nvoz: volumen, silencios", NARANJA),
               ("Filtrado", "huella: Gabor + Otsu\nvoz: pasa-banda\n80–7000 Hz", VERDE),
-              ("Vectorización", "huella: 72 números\nvoz: MFCC, 91 números", VIOLETA),
-              ("Clasificación", "huella: K-means\nvoz: KNN + DTW", ROJO),
+              ("Vectorización", "huella: 104 números\nvoz: MFCC, 91 números", VIOLETA),
+              ("Clasificación", "huella: K-means +\nMahalanobis\nvoz: KNN", ROJO),
               ("Acción", "reconocer, identificar,\nsalir", MARRON)]
     w, h, sep, x0, y0 = 2.95, 2.5, 0.52, 0.5, 0.8
     for i, (t, d, c) in enumerate(etapas):
@@ -133,10 +133,10 @@ def flujo_general(svg):
 # =====================================================================================
 def regla_huella(svg):
     fig, ax = lienzo(21, 7.6, "Regla de decisión para una huella nueva", "identificar_huella() en src/kmeans_huellas.py")
-    caja(ax, 0.6, 3.0, 3.3, 1.8, "Vector de la huella", "72 números\n(histograma de orientación)", AZUL)
-    caja(ax, 4.9, 3.0, 3.6, 1.8, "Distancia a los 3 centroides", "distancia euclídea\n3 valores", NARANJA)
-    caja(ax, 9.5, 3.0, 3.3, 1.8, "Centroide más cercano", "d = menor distancia", VERDE)
-    rombo(ax, 15.0, 3.9, 3.8, 2.7, "¿d ≤ R?\nR = 0,42", VIOLETA)
+    caja(ax, 0.6, 3.0, 3.3, 1.8, "Vector de la huella", "104 números normalizados\n(orientación + Gabor)", AZUL)
+    caja(ax, 4.9, 3.0, 3.6, 1.8, "Distancia de Mahalanobis", "T² a las 3 identidades\n(6 componentes PCA)", NARANJA)
+    caja(ax, 9.5, 3.0, 3.3, 1.8, "Identidad más cercana", "la de menor T²", VERDE)
+    rombo(ax, 15.0, 3.9, 3.8, 2.7, "¿T² ≤ 13,6?\n(λ = 1,48)", VIOLETA)
     caja(ax, 17.5, 5.55, 3.2, 1.4, "Identidad del cluster", "asignada con el húngaro", VERDE)
     caja(ax, 17.5, 0.85, 3.2, 1.4, "NO AUTORIZADO", None, ROJO, tam=12.5)
     flecha(ax, (3.94, 3.9), (4.86, 3.9))
@@ -212,8 +212,8 @@ def clasificar_audio(svg):
     fig, ax = lienzo(21, 9.0, "Qué se hace con un audio nuevo", "clasificar_audio_detalle() en src/knn_audios.py")
     pasos = [("Audio nuevo", "1,5 s, micrófono", AZUL),
              ("Acondicionar", "continua, pasa-banda,\nsilencios, volumen", NARANJA),
-             ("Caracterizar", "secuencia de MFCC\n(tramos × 39)", VERDE),
-             ("DTW contra\ntodos", "197 audios\nde referencia", VIOLETA)]
+             ("Caracterizar", "vector de 91 números\n(MFCC resumidos)", VERDE),
+             ("Distancia euclídea\na todos", "197 audios\nde referencia", VIOLETA)]
     w, h, y = 3.5, 2.1, 4.9
     for i, (t, d, c) in enumerate(pasos):
         x = 0.7 + i * (w + 0.55)
@@ -268,16 +268,16 @@ def carriles(svg, nombre, titulo, subtitulo, huella, voz, destino, ancho=21):
 def arquitectura(svg):
     carriles(svg, "05_arquitectura_codigo", "Organización del código",
              "Cada etapa es un script que deja su resultado en una carpeta; el siguiente lo lee",
-             [("huellasDactilares/", "90 imágenes de Anguli"), ("preprocesar.py", "acondicionamiento\ny filtrado"),
-              ("caracterizar_huellas.py", "vector de 72 números"), ("kmeans_huellas.py", "K-means desde cero\n+ umbral R")],
+             [("dataset_huellas/base/", "165 imágenes de Anguli"), ("preprocesar.py", "acondicionamiento\ny filtrado"),
+              ("caracterizar_huellas.py", "vector de 104 números"), ("kmeans_huellas.py", "K-means + Mahalanobis\n(umbral λ)")],
              [("grabar_audios.py", "audios de 1,5 s"), ("normalizar_audios.py", "acondicionamiento\ny filtrado"),
-              ("caracterizar_audios.py", "MFCC, 39 y 91 números"), ("knn_audios.py", "KNN + DTW desde cero")],
+              ("caracterizar_audios.py", "MFCC, 39 y 91 números"), ("knn_audios.py", "KNN desde cero")],
              ("interfaz/app.py", "aplicación completa\n(usa los modelos de las\ndos ramas)"))
 
 
 def ejecucion(svg):
     carriles(svg, "07_como_ejecutar", "Cómo ejecutar el proyecto", "Comandos en el orden de cada rama",
-             [("python src/preprocesar.py", "huellas procesadas"), ("python src/caracterizar_huellas.py", "vectores de 72"),
+             [("python src/preprocesar.py", "huellas procesadas"), ("python src/caracterizar_huellas.py", "vectores de 104"),
               ("python src/kmeans_huellas.py", "modelo y umbral")],
              [("python src/normalizar_audios.py", "audios acondicionados"), ("python src/caracterizar_audios.py", "MFCC y vectores"),
               ("python src/knn_audios.py", "modelo KNN")],

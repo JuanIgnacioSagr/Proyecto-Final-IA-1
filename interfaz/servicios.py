@@ -1,8 +1,8 @@
 """Logica de la interfaz SIN ventanas: analizar una huella, escuchar un comando de voz y registrar el intento.
 
 Aca no se reimplementa ningun algoritmo: se llama a los modulos que ya estan en src/
-    huella: preprocesar_huella -> rasgo_orientacion (72 numeros) -> K-means + umbral (identificar_huella_detalle)
-    voz   : grabar -> normalizar_audio -> MFCC -> KNN con DTW (clasificar_audio_detalle)
+    huella: preprocesar_huella -> rasgo_huella (104 numeros) -> K-means + umbral (identificar_huella_detalle)
+    voz   : grabar -> normalizar_audio -> MFCC -> KNN con distancia euclidea (clasificar_audio_detalle)
 Mantenerlo separado de la ventana permite probarlo por consola y reutilizarlo.
 """
 import csv
@@ -70,12 +70,12 @@ class Servicios:
 
         gris      imagen original en gris
         binaria   huella ya procesada (alineada, filtrada con Gabor y binarizada): "la huella con filtros"
-        vector    los 72 numeros que la describen
+        vector    los 104 numeros (normalizados) que la describen
         decision  dict de identificar_huella_detalle (resultado, distancia, radio, distancias por persona, ...)
         """
         gris = P.a_gris(Path(ruta))
         binaria = P.preprocesar_huella(gris)
-        vector = CH.rasgo_orientacion(binaria)
+        vector = CH.rasgo_huella(binaria)
         decision = KH.identificar_huella_detalle(vector, self.modelo_huella)
         return {"gris": gris, "binaria": binaria, "vector": vector, "decision": decision}
 

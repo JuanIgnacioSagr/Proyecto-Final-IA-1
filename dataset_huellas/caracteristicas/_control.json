@@ -1,0 +1,680 @@
+{
+ "parametros": {
+  "version": 1,
+  "suavizado_sigma": 1.5,
+  "tensor_sigma": 4.0,
+  "bins_global": 24,
+  "bins_region": 12,
+  "rejilla_orientacion": 2,
+  "fingercode_anillos": 4,
+  "fingercode_sectores": 8,
+  "fingercode_orientaciones": 8,
+  "fingercode_periodo_px": 9.0,
+  "gabor_compacto_rejilla": 2,
+  "minucias_rejilla": 3,
+  "area_ventana_px": 25,
+  "area_umbral": 0.05
+ },
+ "archivos": {
+  "ImpresionDebil/id1/debil_id1_imp006.png": {
+   "bytes": 14938,
+   "mtime_ns": 1793752296685957200
+  },
+  "ImpresionDebil/id1/debil_id1_imp007.png": {
+   "bytes": 14792,
+   "mtime_ns": 1793752296812508200
+  },
+  "ImpresionDebil/id1/debil_id1_imp008.png": {
+   "bytes": 14719,
+   "mtime_ns": 1793752296935805700
+  },
+  "ImpresionDebil/id1/debil_id1_imp009.png": {
+   "bytes": 15223,
+   "mtime_ns": 1793752297058814500
+  },
+  "ImpresionDebil/id1/debil_id1_imp010.png": {
+   "bytes": 14627,
+   "mtime_ns": 1793752297181376900
+  },
+  "ImpresionDebil/id1/debil_id1_imp011.png": {
+   "bytes": 15072,
+   "mtime_ns": 1793752297316349600
+  },
+  "ImpresionDebil/id1/debil_id1_imp012.png": {
+   "bytes": 15158,
+   "mtime_ns": 1793752297438340600
+  },
+  "ImpresionDebil/id1/debil_id1_imp013.png": {
+   "bytes": 14926,
+   "mtime_ns": 1793752297559893900
+  },
+  "ImpresionDebil/id1/debil_id1_imp014.png": {
+   "bytes": 15173,
+   "mtime_ns": 1793752297688889200
+  },
+  "ImpresionDebil/id1/debil_id1_imp015.png": {
+   "bytes": 15224,
+   "mtime_ns": 1793752297888888800
+  },
+  "ImpresionDebil/id1/debil_id1_imp016.png": {
+   "bytes": 14968,
+   "mtime_ns": 1793752298011891700
+  },
+  "ImpresionDebil/id1/debil_id1_imp017.png": {
+   "bytes": 15130,
+   "mtime_ns": 1793752298131889800
+  },
+  "ImpresionDebil/id1/debil_id1_imp018.png": {
+   "bytes": 15169,
+   "mtime_ns": 1793752298255407300
+  },
+  "ImpresionDebil/id1/debil_id1_imp019.png": {
+   "bytes": 14649,
+   "mtime_ns": 1793752298379408800
+  },
+  "ImpresionDebil/id1/debil_id1_imp020.png": {
+   "bytes": 14924,
+   "mtime_ns": 1793752298502404500
+  },
+  "ImpresionDebil/id1/debil_id1_imp021.png": {
+   "bytes": 15224,
+   "mtime_ns": 1793752298629405800
+  },
+  "ImpresionDebil/id1/debil_id1_imp022.png": {
+   "bytes": 15188,
+   "mtime_ns": 1793752298758952100
+  },
+  "ImpresionDebil/id1/debil_id1_imp023.png": {
+   "bytes": 14991,
+   "mtime_ns": 1793752298882923900
+  },
+  "ImpresionDebil/id1/debil_id1_imp024.png": {
+   "bytes": 15146,
+   "mtime_ns": 1793752299004920100
+  },
+  "ImpresionDebil/id1/debil_id1_imp025.png": {
+   "bytes": 15254,
+   "mtime_ns": 1793752299125956900
+  },
+  "ImpresionDebil/id1/debil_id1_imp026.png": {
+   "bytes": 15119,
+   "mtime_ns": 1793752299251920200
+  },
+  "ImpresionDebil/id1/debil_id1_imp027.png": {
+   "bytes": 15180,
+   "mtime_ns": 1793752299375435300
+  },
+  "ImpresionDebil/id1/debil_id1_imp028.png": {
+   "bytes": 14617,
+   "mtime_ns": 1793752299495434100
+  },
+  "ImpresionDebil/id1/debil_id1_imp029.png": {
+   "bytes": 14922,
+   "mtime_ns": 1793752299618951600
+  },
+  "ImpresionDebil/id1/debil_id1_imp030.png": {
+   "bytes": 15118,
+   "mtime_ns": 1793752299743956600
+  },
+  "ImpresionDebil/id2/debil_id2_imp006.png": {
+   "bytes": 12671,
+   "mtime_ns": 1793752299864956400
+  },
+  "ImpresionDebil/id2/debil_id2_imp007.png": {
+   "bytes": 12982,
+   "mtime_ns": 1793752299989498900
+  },
+  "ImpresionDebil/id2/debil_id2_imp008.png": {
+   "bytes": 12660,
+   "mtime_ns": 1793752300112190600
+  },
+  "ImpresionDebil/id2/debil_id2_imp009.png": {
+   "bytes": 12542,
+   "mtime_ns": 1793752300233783300
+  },
+  "ImpresionDebil/id2/debil_id2_imp010.png": {
+   "bytes": 12634,
+   "mtime_ns": 1793752300362818400
+  },
+  "ImpresionDebil/id2/debil_id2_imp011.png": {
+   "bytes": 12606,
+   "mtime_ns": 1793752300484782800
+  },
+  "ImpresionDebil/id2/debil_id2_imp012.png": {
+   "bytes": 13072,
+   "mtime_ns": 1793752300611334700
+  },
+  "ImpresionDebil/id2/debil_id2_imp013.png": {
+   "bytes": 12877,
+   "mtime_ns": 1793752300738335700
+  },
+  "ImpresionDebil/id2/debil_id2_imp014.png": {
+   "bytes": 12876,
+   "mtime_ns": 1793752300873332200
+  },
+  "ImpresionDebil/id2/debil_id2_imp015.png": {
+   "bytes": 13016,
+   "mtime_ns": 1793752301000366600
+  },
+  "ImpresionDebil/id2/debil_id2_imp016.png": {
+   "bytes": 12811,
+   "mtime_ns": 1793752301129373400
+  },
+  "ImpresionDebil/id2/debil_id2_imp017.png": {
+   "bytes": 12514,
+   "mtime_ns": 1793752301253369700
+  },
+  "ImpresionDebil/id2/debil_id2_imp018.png": {
+   "bytes": 12660,
+   "mtime_ns": 1793752301379334100
+  },
+  "ImpresionDebil/id2/debil_id2_imp019.png": {
+   "bytes": 12691,
+   "mtime_ns": 1793752301499331700
+  },
+  "ImpresionDebil/id2/debil_id2_imp020.png": {
+   "bytes": 13131,
+   "mtime_ns": 1793752301624495500
+  },
+  "ImpresionDebil/id2/debil_id2_imp021.png": {
+   "bytes": 12676,
+   "mtime_ns": 1793752301752493700
+  },
+  "ImpresionDebil/id2/debil_id2_imp022.png": {
+   "bytes": 12471,
+   "mtime_ns": 1793752301876076200
+  },
+  "ImpresionDebil/id2/debil_id2_imp023.png": {
+   "bytes": 12988,
+   "mtime_ns": 1793752302062627300
+  },
+  "ImpresionDebil/id2/debil_id2_imp024.png": {
+   "bytes": 13020,
+   "mtime_ns": 1793752302182979200
+  },
+  "ImpresionDebil/id2/debil_id2_imp025.png": {
+   "bytes": 12589,
+   "mtime_ns": 1793752302302982700
+  },
+  "ImpresionDebil/id2/debil_id2_imp026.png": {
+   "bytes": 12646,
+   "mtime_ns": 1793752302423528000
+  },
+  "ImpresionDebil/id2/debil_id2_imp027.png": {
+   "bytes": 12539,
+   "mtime_ns": 1793752302545492800
+  },
+  "ImpresionDebil/id2/debil_id2_imp028.png": {
+   "bytes": 12606,
+   "mtime_ns": 1793752302670527800
+  },
+  "ImpresionDebil/id2/debil_id2_imp029.png": {
+   "bytes": 12844,
+   "mtime_ns": 1793752302792077000
+  },
+  "ImpresionDebil/id2/debil_id2_imp030.png": {
+   "bytes": 13136,
+   "mtime_ns": 1793752302915109300
+  },
+  "ImpresionDebil/id3/debil_id3_imp006.png": {
+   "bytes": 9098,
+   "mtime_ns": 1793752303038076200
+  },
+  "ImpresionDebil/id3/debil_id3_imp007.png": {
+   "bytes": 9110,
+   "mtime_ns": 1793752303161078900
+  },
+  "ImpresionDebil/id3/debil_id3_imp008.png": {
+   "bytes": 9140,
+   "mtime_ns": 1793752303284656900
+  },
+  "ImpresionDebil/id3/debil_id3_imp009.png": {
+   "bytes": 9369,
+   "mtime_ns": 1793752303406690500
+  },
+  "ImpresionDebil/id3/debil_id3_imp010.png": {
+   "bytes": 9284,
+   "mtime_ns": 1793752303530449100
+  },
+  "ImpresionDebil/id3/debil_id3_imp011.png": {
+   "bytes": 9387,
+   "mtime_ns": 1793752303660932500
+  },
+  "ImpresionDebil/id3/debil_id3_imp012.png": {
+   "bytes": 9100,
+   "mtime_ns": 1793752303783449000
+  },
+  "ImpresionDebil/id3/debil_id3_imp013.png": {
+   "bytes": 9039,
+   "mtime_ns": 1793752303904450300
+  },
+  "ImpresionDebil/id3/debil_id3_imp014.png": {
+   "bytes": 9686,
+   "mtime_ns": 1793752304024970700
+  },
+  "ImpresionDebil/id3/debil_id3_imp015.png": {
+   "bytes": 9392,
+   "mtime_ns": 1793752304143971400
+  },
+  "ImpresionDebil/id3/debil_id3_imp016.png": {
+   "bytes": 9759,
+   "mtime_ns": 1793752304263971300
+  },
+  "ImpresionDebil/id3/debil_id3_imp017.png": {
+   "bytes": 9086,
+   "mtime_ns": 1793752304385520400
+  },
+  "ImpresionDebil/id3/debil_id3_imp018.png": {
+   "bytes": 9100,
+   "mtime_ns": 1793752304507524100
+  },
+  "ImpresionDebil/id3/debil_id3_imp019.png": {
+   "bytes": 9059,
+   "mtime_ns": 1793752304643521100
+  },
+  "ImpresionDebil/id3/debil_id3_imp020.png": {
+   "bytes": 9296,
+   "mtime_ns": 1793752304765556900
+  },
+  "ImpresionDebil/id3/debil_id3_imp021.png": {
+   "bytes": 9712,
+   "mtime_ns": 1793752304887522800
+  },
+  "ImpresionDebil/id3/debil_id3_imp022.png": {
+   "bytes": 9311,
+   "mtime_ns": 1793752305007109100
+  },
+  "ImpresionDebil/id3/debil_id3_imp023.png": {
+   "bytes": 9444,
+   "mtime_ns": 1793752305128137200
+  },
+  "ImpresionDebil/id3/debil_id3_imp024.png": {
+   "bytes": 9090,
+   "mtime_ns": 1793752305248103500
+  },
+  "ImpresionDebil/id3/debil_id3_imp025.png": {
+   "bytes": 9284,
+   "mtime_ns": 1793752305367099400
+  },
+  "ImpresionDebil/id3/debil_id3_imp026.png": {
+   "bytes": 9262,
+   "mtime_ns": 1793752305485394700
+  },
+  "ImpresionDebil/id3/debil_id3_imp027.png": {
+   "bytes": 9176,
+   "mtime_ns": 1793752305605395400
+  },
+  "ImpresionDebil/id3/debil_id3_imp028.png": {
+   "bytes": 9140,
+   "mtime_ns": 1793752305736423600
+  },
+  "ImpresionDebil/id3/debil_id3_imp029.png": {
+   "bytes": 9121,
+   "mtime_ns": 1793752305859908600
+  },
+  "ImpresionDebil/id3/debil_id3_imp030.png": {
+   "bytes": 9763,
+   "mtime_ns": 1793752305980491300
+  },
+  "ImpresionMedio/id1/medio_id1_imp031.png": {
+   "bytes": 14777,
+   "mtime_ns": 1793752306175490800
+  },
+  "ImpresionMedio/id1/medio_id1_imp032.png": {
+   "bytes": 14220,
+   "mtime_ns": 1793752306307004500
+  },
+  "ImpresionMedio/id1/medio_id1_imp033.png": {
+   "bytes": 14465,
+   "mtime_ns": 1793752306432004900
+  },
+  "ImpresionMedio/id1/medio_id1_imp034.png": {
+   "bytes": 14289,
+   "mtime_ns": 1793752306557004600
+  },
+  "ImpresionMedio/id1/medio_id1_imp035.png": {
+   "bytes": 14712,
+   "mtime_ns": 1793752306679520000
+  },
+  "ImpresionMedio/id1/medio_id1_imp036.png": {
+   "bytes": 14578,
+   "mtime_ns": 1793752306797517000
+  },
+  "ImpresionMedio/id1/medio_id1_imp037.png": {
+   "bytes": 14636,
+   "mtime_ns": 1793752306916555100
+  },
+  "ImpresionMedio/id1/medio_id1_imp038.png": {
+   "bytes": 14303,
+   "mtime_ns": 1793752307032517200
+  },
+  "ImpresionMedio/id1/medio_id1_imp039.png": {
+   "bytes": 15179,
+   "mtime_ns": 1793752307146551700
+  },
+  "ImpresionMedio/id1/medio_id1_imp040.png": {
+   "bytes": 14523,
+   "mtime_ns": 1793752307262550900
+  },
+  "ImpresionMedio/id1/medio_id1_imp041.png": {
+   "bytes": 14077,
+   "mtime_ns": 1793752307380517300
+  },
+  "ImpresionMedio/id1/medio_id1_imp042.png": {
+   "bytes": 14418,
+   "mtime_ns": 1793752307509522900
+  },
+  "ImpresionMedio/id1/medio_id1_imp043.png": {
+   "bytes": 14278,
+   "mtime_ns": 1793752307650517400
+  },
+  "ImpresionMedio/id1/medio_id1_imp044.png": {
+   "bytes": 15250,
+   "mtime_ns": 1793752307778549300
+  },
+  "ImpresionMedio/id1/medio_id1_imp045.png": {
+   "bytes": 14534,
+   "mtime_ns": 1793752307909024500
+  },
+  "ImpresionMedio/id1/medio_id1_imp046.png": {
+   "bytes": 14379,
+   "mtime_ns": 1793752308025065400
+  },
+  "ImpresionMedio/id1/medio_id1_imp047.png": {
+   "bytes": 15057,
+   "mtime_ns": 1793752308145800600
+  },
+  "ImpresionMedio/id1/medio_id1_imp048.png": {
+   "bytes": 14646,
+   "mtime_ns": 1793752308273798700
+  },
+  "ImpresionMedio/id1/medio_id1_imp049.png": {
+   "bytes": 14935,
+   "mtime_ns": 1793752308399799300
+  },
+  "ImpresionMedio/id1/medio_id1_imp050.png": {
+   "bytes": 14989,
+   "mtime_ns": 1793752308520794900
+  },
+  "ImpresionMedio/id1/medio_id1_imp051.png": {
+   "bytes": 14231,
+   "mtime_ns": 1793752308641798200
+  },
+  "ImpresionMedio/id1/medio_id1_imp052.png": {
+   "bytes": 14513,
+   "mtime_ns": 1793752308765795900
+  },
+  "ImpresionMedio/id1/medio_id1_imp053.png": {
+   "bytes": 14745,
+   "mtime_ns": 1793752308885799800
+  },
+  "ImpresionMedio/id1/medio_id1_imp054.png": {
+   "bytes": 14465,
+   "mtime_ns": 1793752309007308200
+  },
+  "ImpresionMedio/id1/medio_id1_imp055.png": {
+   "bytes": 14915,
+   "mtime_ns": 1793752309123311000
+  },
+  "ImpresionMedio/id2/medio_id2_imp031.png": {
+   "bytes": 12887,
+   "mtime_ns": 1793752309240873800
+  },
+  "ImpresionMedio/id2/medio_id2_imp032.png": {
+   "bytes": 12581,
+   "mtime_ns": 1793752309363869800
+  },
+  "ImpresionMedio/id2/medio_id2_imp033.png": {
+   "bytes": 13002,
+   "mtime_ns": 1793752309530872100
+  },
+  "ImpresionMedio/id2/medio_id2_imp034.png": {
+   "bytes": 12722,
+   "mtime_ns": 1793752309655902900
+  },
+  "ImpresionMedio/id2/medio_id2_imp035.png": {
+   "bytes": 12613,
+   "mtime_ns": 1793752309774872100
+  },
+  "ImpresionMedio/id2/medio_id2_imp036.png": {
+   "bytes": 12623,
+   "mtime_ns": 1793752309898970900
+  },
+  "ImpresionMedio/id2/medio_id2_imp037.png": {
+   "bytes": 12593,
+   "mtime_ns": 1793752310017524300
+  },
+  "ImpresionMedio/id2/medio_id2_imp038.png": {
+   "bytes": 12741,
+   "mtime_ns": 1793752310135612300
+  },
+  "ImpresionMedio/id2/medio_id2_imp039.png": {
+   "bytes": 12890,
+   "mtime_ns": 1793752310256201600
+  },
+  "ImpresionMedio/id2/medio_id2_imp040.png": {
+   "bytes": 12775,
+   "mtime_ns": 1793752310375207300
+  },
+  "ImpresionMedio/id2/medio_id2_imp041.png": {
+   "bytes": 12199,
+   "mtime_ns": 1793752310490087500
+  },
+  "ImpresionMedio/id2/medio_id2_imp042.png": {
+   "bytes": 12659,
+   "mtime_ns": 1793752310609078200
+  },
+  "ImpresionMedio/id2/medio_id2_imp043.png": {
+   "bytes": 12930,
+   "mtime_ns": 1793752310732152800
+  },
+  "ImpresionMedio/id2/medio_id2_imp044.png": {
+   "bytes": 12622,
+   "mtime_ns": 1793752310852628000
+  },
+  "ImpresionMedio/id2/medio_id2_imp045.png": {
+   "bytes": 13038,
+   "mtime_ns": 1793752310969701200
+  },
+  "ImpresionMedio/id2/medio_id2_imp046.png": {
+   "bytes": 12781,
+   "mtime_ns": 1793752311092222900
+  },
+  "ImpresionMedio/id2/medio_id2_imp047.png": {
+   "bytes": 12125,
+   "mtime_ns": 1793752311213219600
+  },
+  "ImpresionMedio/id2/medio_id2_imp048.png": {
+   "bytes": 12737,
+   "mtime_ns": 1793752311334227700
+  },
+  "ImpresionMedio/id2/medio_id2_imp049.png": {
+   "bytes": 13066,
+   "mtime_ns": 1793752311452805000
+  },
+  "ImpresionMedio/id2/medio_id2_imp050.png": {
+   "bytes": 12021,
+   "mtime_ns": 1793752311570807400
+  },
+  "ImpresionMedio/id2/medio_id2_imp051.png": {
+   "bytes": 12403,
+   "mtime_ns": 1793752311695805000
+  },
+  "ImpresionMedio/id2/medio_id2_imp052.png": {
+   "bytes": 12544,
+   "mtime_ns": 1793752311813837100
+  },
+  "ImpresionMedio/id2/medio_id2_imp053.png": {
+   "bytes": 12521,
+   "mtime_ns": 1793752311930293900
+  },
+  "ImpresionMedio/id2/medio_id2_imp054.png": {
+   "bytes": 12265,
+   "mtime_ns": 1793752312046329100
+  },
+  "ImpresionMedio/id2/medio_id2_imp055.png": {
+   "bytes": 12265,
+   "mtime_ns": 1793752312162296200
+  },
+  "ImpresionMedio/id3/medio_id3_imp031.png": {
+   "bytes": 9173,
+   "mtime_ns": 1793752312279323300
+  },
+  "ImpresionMedio/id3/medio_id3_imp032.png": {
+   "bytes": 8867,
+   "mtime_ns": 1793752312404295000
+  },
+  "ImpresionMedio/id3/medio_id3_imp033.png": {
+   "bytes": 9106,
+   "mtime_ns": 1793752312520295600
+  },
+  "ImpresionMedio/id3/medio_id3_imp034.png": {
+   "bytes": 9782,
+   "mtime_ns": 1793752312639296600
+  },
+  "ImpresionMedio/id3/medio_id3_imp035.png": {
+   "bytes": 9227,
+   "mtime_ns": 1793752312758294200
+  },
+  "ImpresionMedio/id3/medio_id3_imp036.png": {
+   "bytes": 9119,
+   "mtime_ns": 1793752312878853000
+  },
+  "ImpresionMedio/id3/medio_id3_imp037.png": {
+   "bytes": 8946,
+   "mtime_ns": 1793752312992815900
+  },
+  "ImpresionMedio/id3/medio_id3_imp038.png": {
+   "bytes": 9730,
+   "mtime_ns": 1793752313159815400
+  },
+  "ImpresionMedio/id3/medio_id3_imp039.png": {
+   "bytes": 9470,
+   "mtime_ns": 1793752313275335100
+  },
+  "ImpresionMedio/id3/medio_id3_imp040.png": {
+   "bytes": 9419,
+   "mtime_ns": 1793752313391369100
+  },
+  "ImpresionMedio/id3/medio_id3_imp041.png": {
+   "bytes": 8966,
+   "mtime_ns": 1793752313508963600
+  },
+  "ImpresionMedio/id3/medio_id3_imp042.png": {
+   "bytes": 10128,
+   "mtime_ns": 1793752313631553800
+  },
+  "ImpresionMedio/id3/medio_id3_imp043.png": {
+   "bytes": 8973,
+   "mtime_ns": 1793752313747589900
+  },
+  "ImpresionMedio/id3/medio_id3_imp044.png": {
+   "bytes": 9853,
+   "mtime_ns": 1793752313870165000
+  },
+  "ImpresionMedio/id3/medio_id3_imp045.png": {
+   "bytes": 10157,
+   "mtime_ns": 1793752313989067300
+  },
+  "ImpresionMedio/id3/medio_id3_imp046.png": {
+   "bytes": 10067,
+   "mtime_ns": 1793752314105066500
+  },
+  "ImpresionMedio/id3/medio_id3_imp047.png": {
+   "bytes": 9795,
+   "mtime_ns": 1793752314222163400
+  },
+  "ImpresionMedio/id3/medio_id3_imp048.png": {
+   "bytes": 10122,
+   "mtime_ns": 1793752314340173500
+  },
+  "ImpresionMedio/id3/medio_id3_imp049.png": {
+   "bytes": 9039,
+   "mtime_ns": 1793752314459207500
+  },
+  "ImpresionMedio/id3/medio_id3_imp050.png": {
+   "bytes": 9006,
+   "mtime_ns": 1793752314576687100
+  },
+  "ImpresionMedio/id3/medio_id3_imp051.png": {
+   "bytes": 9090,
+   "mtime_ns": 1793752314696199600
+  },
+  "ImpresionMedio/id3/medio_id3_imp052.png": {
+   "bytes": 9837,
+   "mtime_ns": 1793752314813711700
+  },
+  "ImpresionMedio/id3/medio_id3_imp053.png": {
+   "bytes": 9058,
+   "mtime_ns": 1793752314935713000
+  },
+  "ImpresionMedio/id3/medio_id3_imp054.png": {
+   "bytes": 8898,
+   "mtime_ns": 1793752315051222300
+  },
+  "ImpresionMedio/id3/medio_id3_imp055.png": {
+   "bytes": 8987,
+   "mtime_ns": 1793752315174463800
+  },
+  "impresionPrimera/id1/primera_id1_imp1.png": {
+   "bytes": 14682,
+   "mtime_ns": 1793752315298019200
+  },
+  "impresionPrimera/id1/primera_id1_imp2.png": {
+   "bytes": 13856,
+   "mtime_ns": 1793752315418988300
+  },
+  "impresionPrimera/id1/primera_id1_imp3.png": {
+   "bytes": 14955,
+   "mtime_ns": 1793752315538988600
+  },
+  "impresionPrimera/id1/primera_id1_imp4.png": {
+   "bytes": 14902,
+   "mtime_ns": 1793752315662987400
+  },
+  "impresionPrimera/id1/primera_id1_imp5.png": {
+   "bytes": 14475,
+   "mtime_ns": 1793752315786506600
+  },
+  "impresionPrimera/id2/primera_id2_imp1.png": {
+   "bytes": 12712,
+   "mtime_ns": 1793752315906616500
+  },
+  "impresionPrimera/id2/primera_id2_imp2.png": {
+   "bytes": 12495,
+   "mtime_ns": 1793752316025650100
+  },
+  "impresionPrimera/id2/primera_id2_imp3.png": {
+   "bytes": 11899,
+   "mtime_ns": 1793752316146617500
+  },
+  "impresionPrimera/id2/primera_id2_imp4.png": {
+   "bytes": 12704,
+   "mtime_ns": 1793752316265613800
+  },
+  "impresionPrimera/id2/primera_id2_imp5.png": {
+   "bytes": 12557,
+   "mtime_ns": 1793752316385131900
+  },
+  "impresionPrimera/id3/primera_id3_imp1.png": {
+   "bytes": 10029,
+   "mtime_ns": 1793752316503130300
+  },
+  "impresionPrimera/id3/primera_id3_imp2.png": {
+   "bytes": 10010,
+   "mtime_ns": 1793752316623127400
+  },
+  "impresionPrimera/id3/primera_id3_imp3.png": {
+   "bytes": 9122,
+   "mtime_ns": 1793752316812134400
+  },
+  "impresionPrimera/id3/primera_id3_imp4.png": {
+   "bytes": 9723,
+   "mtime_ns": 1793752316930678000
+  },
+  "impresionPrimera/id3/primera_id3_imp5.png": {
+   "bytes": 9901,
+   "mtime_ns": 1793752317045645300
+  }
+ }
+}

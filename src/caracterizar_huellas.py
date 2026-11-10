@@ -1,23 +1,29 @@
 """Caracterizacion (vectorizacion) de las huellas preprocesadas + etiquetas.
 
-    huellasProcesadas/<efecto>/id<N>/<nombre>.png        (solo lectura)
-        -> caracteristicas_huellas/
+    dataset_huellas/procesadas/<efecto>/id<N>/<nombre>.png        (solo lectura)
+        -> dataset_huellas/caracteristicas/
 
-caracteristicas_huellas/
+dataset_huellas/caracteristicas/
     etiquetas.csv   una fila por huella: archivo, efecto, identidad, etiqueta
     clases.json     numero de cada identidad (identidad_1=0, identidad_2=1, identidad_3=2, intruso=3)
-    dataset.npz     X (N x 72, rasgo principal) + X_fingercode (N x 256) + X_minucias (N x 18),
-                    y, archivo, efecto, identidad
+    dataset.npz     X (N x 104, rasgo principal NORMALIZADO) + X_crudo (N x 104, sin normalizar)
+                    + X_fingercode (N x 256) + X_minucias (N x 18), y, archivo, efecto, identidad
+    normalizacion.npz  media y desvio de cada columna (calculados con las huellas de entrenamiento) para normalizar
     vectores/       un .npz por huella con sus bloques de rasgos
     graficos/       lo llena graficar_pca.py
     _control.json   uso interno: parametros y huellas ya procesadas
 
-Rasgo principal X (72 numeros): campo de orientacion de las crestas (tensor de
-estructura) -> histograma de orientacion ponderado por coherencia y tinta:
-global de 24 bins + 4 cuadrantes (2x2) de 12 bins, cada uno normalizado a suma 1.
-Bloques opcionales: FingerCode (energia de 8 filtros de Gabor en 4 anillos x 8
+Rasgo principal X (104 numeros) = 72 de orientacion + 32 de energia de Gabor:
+  - orientacion (72): campo de orientacion de las crestas (tensor de estructura) -> histograma
+    de orientacion ponderado por coherencia y tinta: global de 24 bins + 4 cuadrantes (2x2)
+    de 12 bins, cada uno normalizado a suma 1.
+  - Gabor compacto (32): energia de 8 filtros de Gabor en 4 cuadrantes (2x2) (FingerCode reducido).
+Cada columna se NORMALIZA con z-score (media y desvio de las huellas de entrenamiento, ver particion_huellas.py) y
+se divide por ESCALA_Z para que las distancias queden en el mismo orden que antes (R cerca de 0,4).
+Con eso identifica mejor que los 72 solos (ver explicativos/evaluar_rasgos.py).
+Bloques opcionales: FingerCode completo (energia de 8 filtros de Gabor en 4 anillos x 8
 sectores) y densidad de minucias (terminaciones y bifurcaciones por zona 3x3).
-No hace z-score ni PCA: eso va en los graficos y en el clasificador.
+OJO: si se agregan huellas, la media y el desvio cambian y hay que volver a entrenar K-means.
 
 Al volver a ejecutar solo se procesan las huellas nuevas (o cuya imagen cambio).
 Si cambian los parametros hay que usar --forzar.
@@ -42,11 +48,12 @@ import cv2
 import numpy as np
 from skimage.morphology import skeletonize
 
+import particion_huellas as PH
 import preprocesar as P
 
 RAIZ = Path(__file__).resolve().parent.parent
-ENTRADA = RAIZ / "huellasProcesadas"
-SALIDA = RAIZ / "caracteristicas_huellas"
+ENTRADA = RAIZ / "dataset_huellas" / "procesadas"
+SALIDA = RAIZ / "dataset_huellas" / "caracteristicas"
 
 PARAMS = {
     "version": 1,
@@ -59,12 +66,17 @@ PARAMS = {
     "fingercode_sectores": 8,
     "fingercode_orientaciones": 8,
     "fingercode_periodo_px": 9.0,
+    "gabor_compacto_rejilla": 2,  # 2x2 regiones x 8 orientaciones = 32 numeros (se suman al rasgo principal)
     "minucias_rejilla": 3,
     "area_ventana_px": 25,
     "area_umbral": 0.05,
 }
 CLASES_BASE = ["identidad_1", "identidad_2", "identidad_3", "intruso"]
-DIM_X = PARAMS["bins_global"] + PARAMS["rejilla_orientacion"] ** 2 * PARAMS["bins_region"]   # 24 + 48 = 72
+DIM_ORIENT = PARAMS["bins_global"] + PARAMS["rejilla_orientacion"] ** 2 * PARAMS["bins_region"]   # 24 + 48 = 72
+DIM_GC = PARAMS["gabor_compacto_rejilla"] ** 2 * PARAMS["fingercode_orientaciones"]                # 4 * 8 = 32
+DIM_X = DIM_ORIENT + DIM_GC                                                                        # 104 (rasgo principal)
+ESCALA_Z = 33.0                         # divisor final: deja las distancias en el orden de magnitud anterior (R ~ 0,4)
+RUTA_NORM = SALIDA / "normalizacion.npz"
 DIM_FC = PARAMS["fingercode_anillos"] * PARAMS["fingercode_sectores"] * PARAMS["fingercode_orientaciones"]  # 256
 DIM_MIN = 2 * PARAMS["minucias_rejilla"] ** 2                                                              # 18
 
@@ -143,6 +155,22 @@ def rasgo_fingercode(binaria):
     return np.array(v, dtype=np.float32)
 
 
+def rasgo_gabor_compacto(binaria):
+    """32 numeros: energia de Gabor (8 orientaciones) en 2x2 regiones de la huella (FingerCode reducido)."""
+    g = PARAMS["gabor_compacto_rejilla"]
+    t = _tinta(binaria)
+    H, W = t.shape
+    zona = _zona_huella(t)
+    resp = [np.abs(cv2.filter2D(t, cv2.CV_32F, k)) for k in _GABOR]
+    v = []
+    for gy in range(g):
+        for gx in range(g):
+            sl = (slice(gy * H // g, (gy + 1) * H // g), slice(gx * W // g, (gx + 1) * W // g))
+            z = zona[sl]
+            v += [float(R[sl][z].mean()) if z.sum() > 50 else 0.0 for R in resp]
+    return np.array(v, dtype=np.float32)
+
+
 def rasgo_minucias(binaria):
     """18 numeros: terminaciones y bifurcaciones por 1000 px de huella, en una rejilla 3x3."""
     p = PARAMS
@@ -166,15 +194,55 @@ def caracterizar_huella(binaria):
     """Imagen binaria preprocesada (crestas=0, fondo=255) -> dict con los bloques de rasgos."""
     binaria = np.asarray(binaria)
     return {"orient": rasgo_orientacion(binaria),
+            "gabor_c": rasgo_gabor_compacto(binaria),
             "fingercode": rasgo_fingercode(binaria),
             "minucias": rasgo_minucias(binaria)}
+
+
+# --------------------------------------------------------------------------
+# Vector que usa el modelo (104 numeros normalizados)
+# --------------------------------------------------------------------------
+def vector_crudo(bloques):
+    """Une los bloques del rasgo principal (72 de orientacion + 32 de Gabor) SIN normalizar."""
+    return np.concatenate([bloques["orient"], bloques["gabor_c"]]).astype(np.float64)
+
+
+def calcular_normalizacion(X_crudo, entrenamiento):
+    """Media y desvio por columna usando solo las huellas de entrenamiento. El desvio tiene un piso para no inflar columnas casi constantes."""
+    mu, sd = X_crudo[entrenamiento].mean(axis=0), X_crudo[entrenamiento].std(axis=0)
+    return mu, np.maximum(sd, 0.1 * np.median(sd) + 1e-9)
+
+
+def normalizar(X_crudo, media, desvio):
+    return (np.asarray(X_crudo, dtype=np.float64) - media) / desvio / ESCALA_Z
+
+
+_NORM_CACHE = {}
+
+
+def cargar_normalizacion(ruta=None):
+    ruta = Path(ruta or RUTA_NORM)
+    if not ruta.exists():
+        sys.exit(f"No existe {ruta}. Ejecuta antes: python src/caracterizar_huellas.py")
+    sello = ruta.stat().st_mtime_ns
+    if _NORM_CACHE.get("sello") != (ruta, sello):
+        d = np.load(ruta, allow_pickle=False)
+        _NORM_CACHE.update(sello=(ruta, sello), media=d["media"], desvio=d["desvio"])
+    return _NORM_CACHE["media"], _NORM_CACHE["desvio"]
+
+
+def rasgo_huella(binaria):
+    """Imagen binaria preprocesada -> vector de 104 numeros NORMALIZADO, el que entiende el modelo K-means."""
+    media, desvio = cargar_normalizacion()
+    crudo = np.concatenate([rasgo_orientacion(binaria), rasgo_gabor_compacto(binaria)])
+    return normalizar(crudo, media, desvio)
 
 
 # --------------------------------------------------------------------------
 # Carga de lo ya generado
 # --------------------------------------------------------------------------
 def cargar_dataset(carpeta=SALIDA):
-    """-> dict con X (N,72), X_fingercode (N,256), X_minucias (N,18), y, archivo, efecto, identidad"""
+    """-> dict con X (N,104 normalizado), X_crudo (N,104), X_fingercode (N,256), X_minucias (N,18), y, archivo, efecto, identidad"""
     d = np.load(Path(carpeta) / "dataset.npz", allow_pickle=False)
     return {k: d[k] for k in d.files}
 
@@ -267,11 +335,15 @@ def procesar(entrada=ENTRADA, salida=SALIDA, forzar=False, simular=False):
         b = np.load(salida / "vectores" / Path(rel).with_suffix(".npz"))
         ident = int(img.parent.name[2:])
         filas.append((rel, _efecto(img.parent.parent.name), ident, clases[f"identidad_{ident}"],
-                      b["orient"], b["fingercode"], b["minucias"]))
+                      vector_crudo(b), b["fingercode"], b["minucias"]))
+    # normalizacion: media y desvio SOLO con las huellas de entrenamiento (ver particion_huellas.py)
+    crudo = np.stack([r[4] for r in filas])
+    media, desvio = calcular_normalizacion(crudo, PH.es_entrenamiento([r[0] for r in filas]))
+    _escribir_atomico(salida / "normalizacion.npz", lambda f: np.savez(f, media=media, desvio=desvio, escala=ESCALA_Z))
     _escribir_atomico(salida / "etiquetas.csv", lambda f: f.write(
         ("archivo,efecto,identidad,etiqueta\n" + "".join(f"{a},{e},{i},{y}\n" for a, e, i, y, *_ in filas)).encode("utf-8")))
     _escribir_atomico(salida / "dataset.npz", lambda f: np.savez(
-        f, X=np.stack([r[4] for r in filas]), X_fingercode=np.stack([r[5] for r in filas]),
+        f, X=normalizar(crudo, media, desvio), X_crudo=crudo, X_fingercode=np.stack([r[5] for r in filas]),
         X_minucias=np.stack([r[6] for r in filas]),
         y=np.array([r[3] for r in filas], dtype=np.int64), identidad=np.array([r[2] for r in filas], dtype=np.int64),
         archivo=np.array([r[0] for r in filas]), efecto=np.array([r[1] for r in filas])))

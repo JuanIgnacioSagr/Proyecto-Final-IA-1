@@ -3,7 +3,7 @@
 Es el paso previo a la aplicacion final. Hace exactamente lo mismo que se hizo con el dataset:
 
     grabar (16 kHz, mono, 1,5 s)  ->  normalizar_audio (filtro, recorte de silencios, volumen)
-        ->  caracterizar_audio (MFCC)  ->  KNN con DTW (modelo_knn.npz)  ->  comando
+        ->  caracterizar_audio (MFCC)  ->  KNN con distancia euclidea (modelo_knn.npz)  ->  comando
 
 Uso:
     python src/probar_voz.py                          # graba, clasifica y repite

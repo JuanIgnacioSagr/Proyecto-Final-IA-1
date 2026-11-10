@@ -52,6 +52,10 @@ FILTROS = {
     "Fuerte": {"rot": (26, 30), "trans": (52, 60), "scratch": (12, 15), "noise": (12, 15)},
 }
 FILTRO_DEFECTO = "Medio"
+# Niveles que muestra la interfaz. El dataset y el K-means se entrenaron SOLO con Debil y Medio (ver src/generar_dataset_huellas.py):
+# con "Fuerte" (giro 30 y traslacion 60 a la vez) rechaza a la mayoria de las autorizadas, asi que no se ofrece en la demo.
+# "Fuerte" sigue en FILTROS por si se quiere probar a mano.
+FILTROS_INTERFAZ = ("Débil", "Medio")
 
 
 def sortear_filtro(nivel):

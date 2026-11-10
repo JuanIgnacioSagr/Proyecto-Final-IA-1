@@ -17,8 +17,8 @@ ANGULI_EXE_DEFECTO = Path(r"C:\Users\juani\Desktop\4TO\4.2\IA\Anguli-MinGw\Angul
 TIEMPO_MAX_ANGULI_S = 90          # una huella maestra nueva (intruso) tarda ~20 s; una impresion ~3 s
 
 # --- carpetas de huellas ---
-CARPETA_HUELLAS = RAIZ / "huellasConID"                # donde se guardan las huellas generadas
-CARPETA_BASE = RAIZ / "huellasDactilares" / "Fingerprints" / "fp_1"   # 1.jpg, 2.jpg, 3.jpg = las 3 identidades
+CARPETA_HUELLAS = RAIZ / "dataset_huellas" / "interfaz"            # donde se guardan las huellas generadas por la interfaz (se crea sola)
+CARPETA_BASE = RAIZ / "dataset_huellas" / "base" / "Fingerprints" / "fp_1"   # 1.jpg, 2.jpg, 3.jpg = las 3 identidades
 
 # --- voz ---
 MICROFONO = "usb"                 # numero de dispositivo o parte del nombre; si no se encuentra se usa el de Windows

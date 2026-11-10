@@ -87,7 +87,7 @@ def main():
     ax.text(0, 1.0, "Qué cambia", fontsize=14, fontweight="bold", va="top")
     ax.text(0, 0.84, "Euclídea\n• compara posición por posición (i con i)\n• si una palabra se dice más rápido o lento,\n  los tramos no coinciden y la distancia crece\n• pide que los dos audios tengan el mismo largo\n  (por eso se usa el vector fijo de 91 números)",
             fontsize=10.5, color=ROJO, va="top", linespacing=1.5)
-    ax.text(0, 0.38, "DTW\n• busca el mejor emparejamiento entre tramos,\n  estirando o encogiendo el tiempo\n• mantiene el orden (no se cruzan las líneas)\n• trabaja con secuencias de largo distinto\n  (usa los 39 números de cada tramo)",
+    ax.text(0, 0.38, "DTW\n• busca el mejor emparejamiento entre tramos,\n  estirando o encogiendo el tiempo\n• mantiene el orden (no se cruzan las líneas)\n• trabaja con secuencias de largo distinto\n  (usa los 13 MFCC de cada tramo)",
             fontsize=10.5, color=VERDE, va="top", linespacing=1.5)
 
     # ---- fila 2: tablas de costo ----

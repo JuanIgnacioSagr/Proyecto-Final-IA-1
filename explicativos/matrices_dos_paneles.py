@@ -42,11 +42,11 @@ def dos_paneles(titulo, nombres, izq, der, archivo):
 
 
 def main():
-    k = json.loads((RAIZ / "caracteristicas_huellas" / "metricas_kmeans.json").read_text(encoding="utf-8"))
+    k = json.loads((RAIZ / "dataset_huellas" / "caracteristicas" / "metricas_kmeans.json").read_text(encoding="utf-8"))
     dos_paneles("K-means (huellas): matrices de confusión", ["identidad 1", "identidad 2", "identidad 3"],
                 ("Entrenamiento", k["entrenamiento"]["matriz_confusion"]), ("Prueba", k["prueba"]["matriz_confusion"]),
                 "matriz_kmeans_dos_paneles.png")
-    a = json.loads((RAIZ / "caracteristicas" / "metricas_knn.json").read_text(encoding="utf-8"))
+    a = json.loads((RAIZ / "dataset_audios" / "caracteristicas" / "metricas_knn.json").read_text(encoding="utf-8"))
     dos_paneles(f"KNN (voz, {a['distancia'].upper()}, K = {a['k']}): matrices de confusión", ["reconocer", "identificar", "salir"],
                 ("Validación", a["validacion"]["matriz_confusion"]), ("Prueba", a["prueba"]["matriz_confusion"]),
                 "matriz_knn_dos_paneles.png")

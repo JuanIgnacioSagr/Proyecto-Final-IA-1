@@ -9,7 +9,7 @@ Como se obtiene cada una (KNN con DTW y K = 3, lo elegido en la validacion):
                  "dejar una persona afuera" (leave-one-session-out). Es un control, no la prueba final.
   VALIDACION     38 audios (mama, joaco), referencia = los 137 del entrenamiento. Con esto se eligio DTW y K = 3.
   PRUEBA         22 audios (maxi, mili), una sola vez, referencia = entrenamiento + validacion (175 audios).
-Validacion y prueba salen de caracteristicas/metricas_knn.json (las mismas matrices que calcula src/knn_audios.py).
+Validacion y prueba salen de dataset_audios/caracteristicas/metricas_knn.json (las mismas matrices que calcula src/knn_audios.py).
 """
 import json
 import sys

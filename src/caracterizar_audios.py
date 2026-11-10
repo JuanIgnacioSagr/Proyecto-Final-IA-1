@@ -1,9 +1,9 @@
 """Caracterizacion (MFCC) de los audios normalizados + etiquetas.
 
-    audios_normalizados/<comando>/<comando>_s<sesion>_<NNN>.wav     (solo lectura)
-        -> caracteristicas/
+    dataset_audios/normalizados/<comando>/<comando>_s<sesion>_<NNN>.wav     (solo lectura)
+        -> dataset_audios/caracteristicas/
 
-caracteristicas/
+dataset_audios/caracteristicas/
     etiquetas.csv   una fila por audio: archivo, comando, etiqueta, sesion
     clases.json     numero de cada comando (reconocer=0, identificar=1, salir=2, otros=3)
     dataset.npz     LISTO PARA EL KNN: X (N x 91), y (N), archivo, comando, sesion
@@ -42,8 +42,8 @@ from scipy import signal
 from scipy.fft import dct
 
 RAIZ = Path(__file__).resolve().parent.parent
-ENTRADA = RAIZ / "audios_normalizados"
-SALIDA = RAIZ / "caracteristicas"
+ENTRADA = RAIZ / "dataset_audios" / "normalizados"
+SALIDA = RAIZ / "dataset_audios" / "caracteristicas"
 
 PARAMS = {
     "version": 1,

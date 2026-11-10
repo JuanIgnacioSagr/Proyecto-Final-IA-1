@@ -27,7 +27,7 @@ COMANDOS = ("reconocer", "identificar", "salir", "otros")
 PICO_MIN = 0.02     # por debajo: casi silencio
 PICO_MAX = 0.99     # por encima: saturacion
 
-SALIDA = Path(__file__).resolve().parent.parent / "audios"
+SALIDA = Path(__file__).resolve().parent.parent / "dataset_audios" / "crudos"
 
 
 def siguiente_numero(carpeta, comando, sesion):

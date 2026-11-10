@@ -1,6 +1,6 @@
 """Grafico del PCA de los audios separado en entrenamiento, validacion y prueba (KNN).
 
-    python src/graficar_particion_audios.py            # guarda caracteristicas/graficos/pca_particion.png
+    python src/graficar_particion_audios.py            # guarda dataset_audios/caracteristicas/graficos/pca_particion.png
     python src/graficar_particion_audios.py --mostrar  # ademas abre la ventana
 
 Mismo PCA para todos los paneles (ejes iguales), calculado con los 197 audios estandarizados (91 numeros cada uno),
@@ -26,7 +26,7 @@ from sklearn.preprocessing import StandardScaler      # noqa: E402
 import knn_audios as KA                               # noqa: E402
 
 RAIZ = Path(__file__).resolve().parent.parent
-CARPETA = RAIZ / "caracteristicas"
+CARPETA = RAIZ / "dataset_audios" / "caracteristicas"
 SALIDA = CARPETA / "graficos" / "pca_particion.png"
 MARCADORES = ["o", "s", "^", "D", "v", "P", "X", "*", "<", ">"]
 

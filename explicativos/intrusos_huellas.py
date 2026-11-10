@@ -1,16 +1,17 @@
-"""Huellas con INTRUSOS: matriz de confusion de 4 salidas y grafico de los intrusos fuera del umbral.
+"""Huellas con INTRUSOS: matriz de confusion de 4 salidas y grafico de los intrusos contra el umbral.
 
     python explicativos/intrusos_huellas.py      # crea 2 imagenes en explicativos/imagenes/
 
-COMO SE CALCULA (etapa: evaluacion del K-means, despues de entrenar y de fijar el umbral R)
-  1. Cada huella se procesa igual que en el agente: preprocesar -> vector de 72 numeros.
-  2. Se calcula la distancia euclidea (en las 72 dimensiones, NO en el PCA) a los 3 centroides y se toma el mas cercano.
-  3. Si distancia <= R  ->  se acepta con la identidad de ese cluster; si no  ->  "NO AUTORIZADO".
+COMO SE DECIDE (etapa: evaluacion, despues de entrenar K-means y de fijar el umbral lambda; ver src/decision_huellas.py)
+  1. Cada huella se procesa igual que en el agente: preprocesar -> rasgo_huella (vector normalizado).
+  2. Se calcula T2 (Mahalanobis dentro de las k componentes del PCA) a cada identidad y Q (residuo); la identidad es la de menor T2.
+  3. Puntaje s = max(T2 / limite_T2, Q / limite_Q). Si s <= lambda se acepta con esa identidad; si no -> "NO AUTORIZADO".
   4. Se compara con la verdad conocida. Filas = lo que la huella ES (identidad 1, 2, 3 o intruso);
      columnas = lo que el sistema DIJO (identidad 1, 2, 3 o NO AUTORIZADO).
-Huellas usadas
-  autorizadas : las 36 impresiones de prueba del dataset (4 y 5) + las autorizadas que subiste a mano (pruebas_huellas/)
-  intrusos    : los que subiste a mano + los generados con Anguli (explicativos/generar_intrusos.py)
+Huellas usadas en la EVALUACION (nada de esto se uso para entrenar ni para calibrar)
+  autorizadas : las de PRUEBA del dataset (20 %) + las autorizadas que se subieron a mano (dataset_huellas/pruebas_manuales/)
+  intrusos    : los 25 de prueba (dataset_huellas/intrusas/intruso_26..50) + los subidos a mano
+Los intrusos 01-25 se usan SOLO para calibrar lambda; aparecen en los graficos marcados como "calibracion".
 """
 import csv
 import sys
@@ -22,13 +23,14 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt                                   # noqa: E402
 import numpy as np                                                # noqa: E402
 from matplotlib.lines import Line2D                               # noqa: E402
-from matplotlib.patches import Circle                             # noqa: E402
-from sklearn.decomposition import PCA                             # noqa: E402
 
 RAIZ = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ / "src"))
 import caracterizar_huellas as CH                                 # noqa: E402
+import decision_huellas as DH                                     # noqa: E402
+import graficos_decision as GD                                    # noqa: E402
 import kmeans_huellas as KH                                       # noqa: E402
+import particion_huellas as PH                                    # noqa: E402
 import preprocesar as P                                           # noqa: E402
 
 AQUI = Path(__file__).resolve().parent
@@ -41,45 +43,51 @@ SALIDAS = ["Identidad 1", "Identidad 2", "Identidad 3", "NO AUTORIZADO"]
 
 
 def vector_de(ruta):
-    return CH.rasgo_orientacion(P.preprocesar_huella(P.a_gris(Path(ruta)))).astype(float)
+    """Vector normalizado de una huella nueva (el mismo camino que usa la interfaz)."""
+    return CH.rasgo_huella(P.preprocesar_huella(P.a_gris(Path(ruta)))).astype(float)
 
 
-def cargar():
-    """Devuelve X (vectores de 72), verdad (0,1,2 = identidades, 3 = intruso) y el origen de cada huella."""
+def modelo():
+    """(ajuste de la regla de decision m, mapeo cluster->identidad, lambda aplicado, centroides)."""
+    mod = np.load(KH.RUTA_MODELO, allow_pickle=False)
+    return DH.desde_modelo(mod), mod["mapeo"].astype(int), float(mod["radios"][0]), mod["centroides"]
+
+
+def cargar(incluir_calibracion=False):
+    """Devuelve X (vectores), verdad (0,1,2 = identidades, 3 = intruso) y el origen de cada huella.
+
+    origen: 'dataset (prueba)', 'subida a mano', 'intruso (prueba)' y, si se pide, 'intruso (calibracion)'.
+    """
     d = np.load(KH.CARPETA / "dataset.npz", allow_pickle=True)
-    imp = np.array([int(str(a).split("_imp")[1].split(".")[0]) for a in d["archivo"]])
-    prueba = np.isin(imp, (4, 5))
-    X = [d["X"][prueba].astype(float)]
-    verdad = [d["y"][prueba].astype(int)]
+    prueba = PH.particion([str(a) for a in d["archivo"]]) == "prueba"
+    X, verdad = [d["X"][prueba].astype(float)], [d["y"][prueba].astype(int)]
     origen = [np.array(["dataset (prueba)"] * int(prueba.sum()))]
 
     vec, ver, ori = [], [], []
-    with open(RAIZ / "pruebas_huellas" / "registro.csv", encoding="utf-8") as f:
+    with open(RAIZ / "dataset_huellas" / "pruebas_manuales" / "registro.csv", encoding="utf-8") as f:
         for fila in csv.DictReader(f):
-            ruta = RAIZ / "huellas_nuevas" / fila["archivo"]
-            if not ruta.exists():
+            ruta = RAIZ / "dataset_huellas" / "pruebas_manuales" / "huellas_nuevas" / fila["archivo"]
+            if not ruta.exists() or not fila["verdad"]:
                 continue
             vec.append(vector_de(ruta))
             ver.append(3 if fila["verdad"] == "intruso" else int(fila["verdad"][-1]) - 1)
             ori.append("subida a mano")
-    X.append(np.array(vec))
-    verdad.append(np.array(ver))
+    X.append(np.array(vec).reshape(-1, CH.DIM_X))
+    verdad.append(np.array(ver, dtype=int))
     origen.append(np.array(ori))
 
-    gen = sorted((AQUI / "intrusos_generados").glob("*.jpg"))
-    X.append(np.array([vector_de(r) for r in gen]).reshape(-1, 72))
-    verdad.append(np.full(len(gen), 3))
-    origen.append(np.array(["generada con Anguli"] * len(gen)))
+    Xi, cal, _ = KH.cargar_intrusos()
+    usar = np.ones(len(Xi), dtype=bool) if incluir_calibracion else ~cal
+    X.append(Xi[usar])
+    verdad.append(np.full(int(usar.sum()), 3))
+    origen.append(np.where(cal[usar], "intruso (calibracion)", "intruso (prueba)"))
     return np.vstack(X), np.concatenate(verdad), np.concatenate(origen)
 
 
-def decidir(X, C, mapeo, R):
-    """Devuelve (salida 0..3, distancia al centroide mas cercano, indice de ese centroide)."""
-    D = np.linalg.norm(X[:, None, :] - C[None, :, :], axis=2)
-    j = D.argmin(axis=1)
-    d = D[np.arange(len(X)), j]
-    salida = np.where(d <= R, mapeo[j], 3)
-    return salida, d, j
+def decidir(X, m, mapeo, lam):
+    """Devuelve (salida 0..3, puntaje s de la identidad mas cercana, indice del cluster mas cercano)."""
+    j, s, acep = DH.decidir(X, m, lam)
+    return np.where(acep, mapeo[j], 3), s, j
 
 
 def matriz(verdad, salida):
@@ -118,99 +126,59 @@ def metricas(M):
 
 
 def main():
-    modelo = np.load(KH.RUTA_MODELO, allow_pickle=False)
-    C, mapeo, R = modelo["centroides"], modelo["mapeo"].astype(int), float(modelo["radios"][0])
+    m, mapeo, lam, C = modelo()
     X, verdad, origen = cargar()
-    print(f"autorizadas: {(verdad < 3).sum()}  | intrusos: {(verdad == 3).sum()}  | R aplicado = {R:.2f}")
+    aut, intr = verdad < 3, verdad == 3
+    print(f"autorizadas: {aut.sum()}  | intrusos: {intr.sum()}  | umbral lambda aplicado = {lam:.2f}")
 
     # ------------------------------------------------ matriz de confusion
     fig, axs = plt.subplots(1, 2, figsize=(14, 6.2))
-    for ax, r in zip(axs, (R, 0.31)):
-        sal, d, _ = decidir(X, C, mapeo, r)
+    for ax, r in zip(axs, (lam, 1.0)):
+        sal, _, _ = decidir(X, m, mapeo, r)
         M = matriz(verdad, sal)
-        m = metricas(M)
-        dibujar_matriz(ax, M, f"Radio R = {r:.2f}{' (aplicado)' if r == R else ''}\nFRR {m['frr']*100:.1f} %  ·  FAR {m['far']*100:.1f} %  ·  exactitud {m['exactitud']*100:.1f} %")
-        print(f"R={r:.2f}  FRR={m['frr']*100:.1f}% ({m['rechazadas']}/{m['n_aut']})  mal_identificadas={m['mal_id']}  "
-              f"FAR={m['far']*100:.1f}% ({m['intrusos_aceptados']}/{m['n_int']})  exactitud={m['exactitud']*100:.1f}%")
+        mt = metricas(M)
+        etiqueta = " (aplicado, calibrado con intrusos)" if r == lam else " (solo el límite del 95 % de validación)"
+        dibujar_matriz(ax, M, f"Umbral λ = {r:.2f}{etiqueta}\nFRR {mt['frr'] * 100:.1f} %  ·  FAR {mt['far'] * 100:.1f} %  ·  exactitud {mt['exactitud'] * 100:.1f} %")
+        print(f"lambda={r:.2f}  FRR={mt['frr'] * 100:.1f}% ({mt['rechazadas']}/{mt['n_aut']})  mal_identificadas={mt['mal_id']}  "
+              f"FAR={mt['far'] * 100:.1f}% ({mt['intrusos_aceptados']}/{mt['n_int']})  exactitud={mt['exactitud'] * 100:.1f}%")
         print(M)
-    fig.suptitle(f"Matriz de confusión de huellas con intrusos ({int((verdad < 3).sum())} autorizadas y {int((verdad == 3).sum())} intrusos)",
+    fig.suptitle(f"Matriz de confusión de huellas con intrusos, solo evaluación ({int(aut.sum())} autorizadas y {int(intr.sum())} intrusos)",
                  fontsize=14, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.94))
     SALIDA.mkdir(parents=True, exist_ok=True)
     fig.savefig(SALIDA / "matriz_confusion_intrusos.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
 
-    # ------------------------------------------------ intrusos fuera del umbral
-    sal, d, j = decidir(X, C, mapeo, R)
-    datos = np.load(KH.CARPETA / "dataset.npz", allow_pickle=True)
-    Xd, yd = datos["X"].astype(float), datos["y"].astype(int)
-    pca = PCA(2, random_state=0).fit(Xd)
-    Pc = pca.transform(C)
+    # ------------------------------------------------ intrusos contra el umbral
+    Xc, vc, oc = cargar(incluir_calibracion=True)
+    _, s, _ = decidir(Xc, m, mapeo, lam)
+    fig, axs = plt.subplots(1, 2, figsize=(17, 7.2), gridspec_kw={"width_ratios": [1.1, 1]})
+    grupos = [("Autorizadas\n(dataset prueba)", (vc < 3) & (oc == "dataset (prueba)"), "#2ca02c"),
+              ("Autorizadas\n(subidas a mano)", (vc < 3) & (oc == "subida a mano"), "#98df8a"),
+              ("Intrusos\n(subidos a mano)", (vc == 3) & (oc == "subida a mano"), "#ff9896"),
+              ("Intrusos\n(calibración)", (vc == 3) & (oc == "intruso (calibracion)"), "#d9a0a0"),
+              ("Intrusos\n(prueba)", (vc == 3) & (oc == "intruso (prueba)"), ROJO)]
+    rejilla = [(Xc[g[1]], dict(s=48, color=g[2], edgecolor="black", linewidth=0.5), g[0].replace("\n", " ")) for g in grupos if g[1].any()]
+    GD.dibujar_t2_q(axs[0], m, lam, rejilla, titulo=(f"T² contra Q: a la izquierda de la línea = aceptada (λ = {lam:.2f})" if not m.get("usar_q", True) else f"T² contra Q: dentro del rectángulo = aceptada (λ = {lam:.2f})"))
+    axs[0].legend(fontsize=8, loc="lower right")
 
-    def posicion(X72):
-        D = np.linalg.norm(X72[:, None, :] - C[None, :, :], axis=2)
-        jj = D.argmin(axis=1)
-        dd = D[np.arange(len(X72)), jj]
-        v = pca.transform(X72) - Pc[jj]
-        n = np.linalg.norm(v, axis=1, keepdims=True)
-        u = np.where(n > 1e-9, v / np.maximum(n, 1e-9), np.array([1.0, 0.0]))
-        return Pc[jj] + u * dd[:, None]
-
-    fig = plt.figure(figsize=(17, 7.2))
-    gs = fig.add_gridspec(1, 2, width_ratios=[1.15, 1], wspace=0.2)
-    ax = fig.add_subplot(gs[0])
-    pd = posicion(Xd)
-    for i in range(3):
-        ax.scatter(pd[yd == i, 0], pd[yd == i, 1], s=22, color=COLORES[i], alpha=0.22, edgecolor="none")
-    for c in range(3):
-        ident = mapeo[c]
-        ax.add_patch(Circle(Pc[c], R, fill=True, fc=COLORES[ident], alpha=0.08, ec="none"))
-        ax.add_patch(Circle(Pc[c], R, fill=False, ec=COLORES[ident], lw=2.2, ls="--"))
-        ax.scatter(*Pc[c], marker="X", s=330, color=COLORES[ident], edgecolor="black", linewidth=1.6, zorder=5)
-        ax.text(Pc[c][0], Pc[c][1] + R + 0.03, f"Identidad {ident + 1}", ha="center", fontweight="bold", fontsize=10)
-    pos = posicion(X)
-    aut = verdad < 3
-    ax.scatter(pos[aut, 0], pos[aut, 1], s=60, marker="o", facecolor="none", edgecolor="black", linewidth=1.2, zorder=6)
-    for i in range(3):
-        m = verdad == i
-        ax.scatter(pos[m, 0], pos[m, 1], s=34, marker="o", color=COLORES[i], zorder=7)
-    dentro = (verdad == 3) & (d <= R)
-    fuera = (verdad == 3) & (d > R)
-    ax.scatter(pos[fuera, 0], pos[fuera, 1], marker="X", s=95, color=ROJO, edgecolor="black", linewidth=0.7, zorder=8)
-    ax.scatter(pos[dentro, 0], pos[dentro, 1], marker="X", s=130, color="gold", edgecolor="black", linewidth=1.3, zorder=9)
-    ax.set_aspect("equal")
-    ax.set_xlabel("posición según el plano PCA (cada punto a su distancia REAL del centroide)")
-    ax.set_title(f"Intrusos y autorizadas respecto del umbral R = {R:.2f}", fontsize=12, fontweight="bold")
-    ax.grid(alpha=0.2)
-    leg = [Line2D([], [], marker="o", ls="", color="gray", label=f"autorizadas ({int(aut.sum())}), color = identidad"),
-           Line2D([], [], marker="X", ls="", color=ROJO, markeredgecolor="black", markersize=10, label=f"intrusos RECHAZADOS ({int(fuera.sum())})"),
-           Line2D([], [], marker="X", ls="", color="gold", markeredgecolor="black", markersize=11, label=f"intrusos ACEPTADOS por error ({int(dentro.sum())})"),
-           Line2D([], [], marker="o", ls="", color="lightgray", alpha=0.5, label="dataset de entrenamiento y prueba (tenue)")]
-    ax.legend(handles=leg, loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=2, fontsize=9, framealpha=0.95)
-
-    ax = fig.add_subplot(gs[1])
-    grupos = [("Autorizadas\n(dataset prueba)", (verdad < 3) & (origen == "dataset (prueba)"), "#2ca02c"),
-              ("Autorizadas\n(subidas a mano)", (verdad < 3) & (origen == "subida a mano"), "#98df8a"),
-              ("Intrusos\n(subidos a mano)", (verdad == 3) & (origen == "subida a mano"), "#ff9896"),
-              ("Intrusos\n(Anguli)", (verdad == 3) & (origen == "generada con Anguli"), ROJO)]
+    ax = axs[1]
     rng = np.random.default_rng(0)
-    for k, (nombre, m, c) in enumerate(grupos):
-        ax.scatter(rng.normal(k, 0.07, int(m.sum())), d[m], s=55, color=c, edgecolor="black", linewidth=0.6, zorder=3)
-        ax.text(k, 0.015, f"{int((d[m] > R).sum())} de {int(m.sum())} rechazadas", ha="center", va="bottom", fontsize=9.5,
+    for k, (nombre, sel, color) in enumerate(grupos):
+        ax.scatter(rng.normal(k, 0.07, int(sel.sum())), s[sel], s=55, color=color, edgecolor="black", linewidth=0.6, zorder=3)
+        ax.text(k, s.max() * 1.06, f"{int((s[sel] > lam).sum())} de {int(sel.sum())}\nrechazadas", ha="center", va="bottom", fontsize=9,
                 fontweight="bold", bbox=dict(boxstyle="round,pad=0.25", fc="white", ec="gray"))
-    ax.axhline(R, color="black", lw=2.2, ls="--")
-    ax.axhspan(R, max(d.max() * 1.05, R + 0.1), color=ROJO, alpha=0.08)
-    ax.text(3.45, R + 0.02, f"umbral R = {R:.2f}", ha="right", fontweight="bold")
-    ax.text(-0.45, d.max() * 1.04, "RECHAZADA (NO AUTORIZADO)", ha="left", va="top", color=ROJO, fontweight="bold")
-    ax.text(-0.45, R - 0.03, "ACEPTADA", ha="left", va="top", color="#2ca02c", fontweight="bold")
-    ax.set_xticks(range(4))
-    ax.set_xticklabels([g[0] for g in grupos])
-    ax.set_ylim(0, max(d.max() * 1.08, R + 0.1))
-    ax.set_xlim(-0.5, 3.5)
-    ax.set_ylabel("distancia al centroide más cercano (72 números)")
-    ax.set_title("Distancia de cada huella al centroide más cercano", fontsize=12, fontweight="bold")
-    ax.grid(axis="y", alpha=0.25)
-    fig.suptitle("Los intrusos quedan, en su mayoría, fuera del umbral", fontsize=15, fontweight="bold")
+    ax.axhline(lam, color="black", lw=2.2, ls="--")
+    ax.axhspan(lam, s.max() * 1.05, color=ROJO, alpha=0.08)
+    ax.text(len(grupos) - 0.55, lam, f"umbral λ = {lam:.2f}", ha="right", va="bottom", fontweight="bold")
+    ax.set_yscale("log")
+    ax.set_xticks(range(len(grupos)))
+    ax.set_xticklabels([g[0] for g in grupos], fontsize=9)
+    ax.set_ylabel("puntaje s = T²/límite  (escala log)" if not m.get("usar_q", True) else "puntaje s = máx(T²/límite, Q/límite)  (escala log)")
+    ax.set_ylim(s.min() * 0.8, s.max() * 1.9)
+    ax.set_title("Puntaje de cada huella (arriba de la línea = rechazada)", fontsize=12, fontweight="bold")
+    ax.grid(axis="y", alpha=0.25, which="both")
+    fig.suptitle("Los intrusos quedan fuera del umbral", fontsize=15, fontweight="bold")
     fig.savefig(SALIDA / "intrusos_fuera_umbral.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("Guardado en", SALIDA)

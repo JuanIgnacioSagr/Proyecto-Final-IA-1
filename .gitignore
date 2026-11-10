@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.claude/
+informe/_informe_tmp.html
+dataset_huellas/interfaz/
+explicativos/datos_huellas_matlab.mat

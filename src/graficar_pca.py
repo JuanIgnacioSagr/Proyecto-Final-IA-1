@@ -5,7 +5,7 @@
     python src/graficar_pca.py --datos huellas --rasgos fingercode
     python src/graficar_pca.py --datos audios --no-escalar
 
-Lee el dataset.npz de caracteristicas_huellas/ o de caracteristicas/ y guarda
+Lee el dataset.npz de dataset_huellas/caracteristicas/ o de dataset_audios/caracteristicas/ y guarda
 pca_2d.png y pca_3d.png en la carpeta graficos/ de esa misma carpeta.
 
 - Huellas: color = identidad, marcador = efecto. Por defecto SIN estandarizar
@@ -28,7 +28,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 RAIZ = Path(__file__).resolve().parent.parent
-CARPETAS = {"huellas": RAIZ / "caracteristicas_huellas", "audios": RAIZ / "caracteristicas"}
+CARPETAS = {"huellas": RAIZ / "dataset_huellas" / "caracteristicas", "audios": RAIZ / "dataset_audios" / "caracteristicas"}
 BLOQUES_HUELLAS = {"orient": "X", "fingercode": "X_fingercode", "minucias": "X_minucias"}
 MARCADORES = ["o", "s", "^", "D", "v", "P", "X", "*", "h", "<", ">", "p"]
 

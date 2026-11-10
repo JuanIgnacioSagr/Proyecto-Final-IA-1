@@ -37,7 +37,7 @@ HSV = plt.cm.hsv
 #  HUELLA
 # =====================================================================================
 def huella(ruta=None):
-    ruta = ruta or RAIZ / "huellasProcesadas" / "impresionPrimera" / "id1" / "primera_id1_imp1.png"
+    ruta = ruta or RAIZ / "dataset_huellas" / "procesadas" / "impresionPrimera" / "id1" / "primera_id1_imp1.png"
     binaria = P.a_gris(Path(ruta))
     t = CH._tinta(binaria)
     p = CH.PARAMS
@@ -147,7 +147,7 @@ def huella(ruta=None):
 #  AUDIO
 # =====================================================================================
 def audio(ruta=None):
-    ruta = ruta or sorted((RAIZ / "audios_normalizados" / "reconocer").glob("*.wav"))[3]
+    ruta = ruta or sorted((RAIZ / "dataset_audios" / "normalizados" / "reconocer").glob("*.wav"))[3]
     x, fs = sf.read(str(ruta), dtype="float32")
     if x.ndim > 1:
         x = x.mean(axis=1)

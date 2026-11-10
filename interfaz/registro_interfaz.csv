@@ -1,0 +1,11 @@
+fecha,archivo,origen_real,filtro,via,resultado,identidad_cercana,distancia,radio,correcto
+2026-11-10 09:58:18,id1_20261110_095739.jpg,id1,"giro 13, desplaz. 34, rayones 0-7, ruido 0-7",voz,identidad_1,identidad_1,0.5223,1.48,True
+2026-11-10 09:58:23,id1_20261110_095739.jpg,id1,"giro 13, desplaz. 34, rayones 0-7, ruido 0-7",voz,identidad_1,identidad_1,0.5223,1.48,True
+2026-11-10 09:59:17,id1_20261110_095739.jpg,id1,"giro 13, desplaz. 34, rayones 0-7, ruido 0-7",voz,identidad_1,identidad_1,0.5223,1.48,True
+2026-11-10 10:00:22,intruso_20261110_100007.jpg,intruso,"giro 13, desplaz. 25, rayones 0-10, ruido 0-9",voz,NO AUTORIZADO,identidad_1,3.3897,1.48,True
+2026-11-10 10:01:39,id3_20261110_100132.jpg,id3,"giro 3, desplaz. 12, rayones 0-1, ruido 0-2",voz,identidad_3,identidad_3,0.059,1.48,True
+2026-11-10 10:09:12,id1_20261110_100859.jpg,id1,"giro 17, desplaz. 25, rayones 0-7, ruido 0-8",voz,identidad_1,identidad_1,0.558,1.48,True
+2026-11-10 10:13:48,id1_20261110_101340.jpg,id1,"giro 18, desplaz. 28, rayones 0-9, ruido 0-10",manual,identidad_1,identidad_1,0.2978,1.48,True
+2026-11-10 10:39:22,id1_20261110_103916.jpg,id1,"giro 15, desplaz. 29, rayones 0-9, ruido 0-8",voz,identidad_1,identidad_1,0.1585,1.48,True
+2026-11-10 11:49:58,id1_20261110_114947.jpg,id1,"giro 7, desplaz. 11, rayones 0-1, ruido 0-3",voz,identidad_1,identidad_1,0.5267,1.48,True
+2026-11-10 11:50:41,intruso_20261110_115031.jpg,intruso,"giro 7, desplaz. 11, rayones 0-1, ruido 0-2",voz,NO AUTORIZADO,identidad_1,14.8548,1.48,True

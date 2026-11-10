@@ -23,8 +23,8 @@ METODO_DEFECTO = "D"
 METODOS = ("A", "B", "C", "D", "E")
 
 RAIZ = Path(__file__).resolve().parent.parent
-ENTRADA = RAIZ / "huellasDactilares"
-SALIDA = RAIZ / "huellasProcesadas"
+ENTRADA = RAIZ / "dataset_huellas" / "base"
+SALIDA = RAIZ / "dataset_huellas" / "procesadas"
 
 
 # --------------------------------------------------------------------------
@@ -283,7 +283,7 @@ def preprocesar_huella(entrada, metodo=METODO_DEFECTO, devolver_pasos=False):
 
 
 def procesar_carpeta(metodo=METODO_DEFECTO, entrada=ENTRADA, salida=SALIDA):
-    """Procesa huellasDactilares/<efecto>/id<N>/*.jpg -> huellasProcesadas/ (espejo, PNG)."""
+    """Procesa dataset_huellas/base/<efecto>/id<N>/*.jpg -> dataset_huellas/procesadas/ (espejo, PNG)."""
     n = 0
     for ruta in sorted(entrada.glob("*/id*/*.jpg")):
         rel = ruta.relative_to(entrada).with_suffix(".png")

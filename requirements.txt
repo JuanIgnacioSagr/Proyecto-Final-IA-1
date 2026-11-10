@@ -1,4 +1,4 @@
-﻿numpy
+numpy
 opencv-python
 scikit-image
 scipy
@@ -7,3 +7,7 @@ matplotlib
 pillow
 sounddevice
 soundfile
+
+# opcional, solo para generar el PDF del informe (informe/generar_pdf.py)
+# markdown-it-py
+# mdit-py-plugins

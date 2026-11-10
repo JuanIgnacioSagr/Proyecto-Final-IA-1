@@ -1,7 +1,7 @@
 """Acondicionamiento (filtrado + normalizacion) de los audios del dataset de voz.
 
     audios/<comando>/<comando>_s<sesion>_<NNN>.wav          (solo lectura)
-        -> audios_normalizados/<comando>/<mismo nombre>.wav
+        -> dataset_audios/normalizados/<comando>/<mismo nombre>.wav
 
 Pasos por archivo: mono 16 kHz -> quitar DC -> pasa-banda Butterworth
 (SOS, fase cero) -> recorte de silencios (VAD por energia) -> normalizacion RMS
@@ -34,8 +34,8 @@ import soundfile as sf
 from scipy import ndimage, signal
 
 RAIZ = Path(__file__).resolve().parent.parent
-ENTRADA = RAIZ / "audios"
-SALIDA = RAIZ / "audios_normalizados"
+ENTRADA = RAIZ / "dataset_audios" / "crudos"
+SALIDA = RAIZ / "dataset_audios" / "normalizados"
 
 PARAMS = {
     "version": 2,

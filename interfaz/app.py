@@ -92,7 +92,7 @@ class App(tk.Tk):
 
         self._armar_ventana()
         self._actualizar_pasos()
-        self.log(f"Listo. Radio de aceptación del K-means: R = {self.srv.radio:.2f}. "
+        self.log(f"Listo. Umbral de aceptación del K-means: λ = {self.srv.radio:.2f}. "
                  f"Micrófono: {self.srv.nombre_microfono()}"
                  + (" (el configurado '" + str(config.MICROFONO) + "' no está conectado)" if self.srv.microfono is None and config.MICROFONO else "") + ".")
         self.after(100, self._leer_cola)
@@ -106,7 +106,7 @@ class App(tk.Tk):
         titulo = tk.Frame(cab, bg=PAL["fondo"])
         titulo.pack(side="left")
         tk.Label(titulo, text="Reconocimiento biométrico", bg=PAL["fondo"], fg=PAL["texto"], font=(FUENTE, 20, "bold")).pack(anchor="w")
-        tk.Label(titulo, text="Huella dactilar (K-means)  ·  Comandos de voz (KNN + DTW)", bg=PAL["fondo"], fg=PAL["suave"],
+        tk.Label(titulo, text="Huella dactilar (K-means)  ·  Comandos de voz (KNN, distancia euclídea)", bg=PAL["fondo"], fg=PAL["suave"],
                  font=(FUENTE, 10)).pack(anchor="w")
         self.pasos = Pasos(cab, ["Huella", "Reconocer", "Identificar"])
         self.pasos.pack(side="right")
@@ -134,7 +134,7 @@ class App(tk.Tk):
         opciones(c, self.var_tipo, [(texto, clave) for clave, texto in anguli.TIPOS.items()], columnas=2).pack(fill="x", pady=(4, 12))
         etiqueta(c, "Filtro (distorsión)", suave=True).pack(anchor="w")
         self.var_filtro = tk.StringVar(value=anguli.FILTRO_DEFECTO)
-        opciones(c, self.var_filtro, [(n, n) for n in anguli.FILTROS], columnas=3).pack(fill="x", pady=(4, 14))
+        opciones(c, self.var_filtro, [(n, n) for n in anguli.FILTROS_INTERFAZ], columnas=2).pack(fill="x", pady=(4, 14))
         self.btn_generar = Boton(c, "Generar huella (Anguli)", command=self.generar, tipo="primario", grande=True)
         self.btn_generar.pack(fill="x")
         self.btn_existente = Boton(c, "Elegir existente…", command=self.elegir_existente)
@@ -145,7 +145,7 @@ class App(tk.Tk):
         self.lbl_tiempo.pack(anchor="w", pady=(4, 0))
         self.lbl_estado_huella = etiqueta(c, "Sin huella todavía.", suave=True, wraplength=210, justify="left")
         self.lbl_estado_huella.pack(anchor="w", pady=(8, 0))
-        etiqueta(c, "Un intruso es una persona nueva:\ntarda unos segundos más.", suave=True, tam=8, justify="left").pack(anchor="w", pady=(10, 0))
+        etiqueta(c, "Intruso: persona nueva,\ntarda unos segundos.", suave=True, tam=8, justify="left").pack(anchor="w", pady=(4, 0))
 
         # ---------- centro: las dos imagenes ----------
         centro = tk.Frame(cuerpo, bg=PAL["fondo"])
@@ -161,6 +161,17 @@ class App(tk.Tk):
         self.lbl_img2.pack(expand=True)
         self.lbl_origen = etiqueta(centro, "", suave=True, bg=PAL["fondo"], wraplength=560)
         self.lbl_origen.grid(row=1, column=0, columnspan=2, pady=(8, 0))
+        # el grafico de clusters NO se abre solo: se pide con el boton (o marcando la casilla). Va aqui y no en la columna
+        # derecha porque ahi quedaba cortado en ventanas de poca altura.
+        barra_graf = tk.Frame(centro, bg=PAL["fondo"])
+        barra_graf.grid(row=2, column=0, columnspan=2, pady=(8, 0))
+        self.var_grafico = tk.BooleanVar(value=False)
+        tk.Checkbutton(barra_graf, text="Abrir el gráfico al identificar", variable=self.var_grafico, bg=PAL["fondo"],
+                       fg=PAL["texto"], selectcolor=PAL["tarjeta2"], activebackground=PAL["fondo"], activeforeground=PAL["texto"],
+                       font=(FUENTE, 9), bd=0, highlightthickness=0, cursor="hand2").pack(side="left", padx=(0, 16))
+        self.btn_grafico = Boton(barra_graf, "Ver gráfico de clusters", command=self.ver_grafico)
+        self.btn_grafico.pack(side="left")
+        self.btn_grafico.configure(state="disabled")
         self._poner_imagenes(None, None)
 
         # ---------- columna derecha: 2 · Voz y resultado ----------
@@ -189,16 +200,6 @@ class App(tk.Tk):
         self.insignia.pack(fill="x", pady=(4, 6))
         self.lbl_detalle = etiqueta(c, "", suave=True, wraplength=270, justify="left")
         self.lbl_detalle.pack(anchor="w")
-
-        tk.Frame(c, bg=PAL["borde"], height=1).pack(fill="x", pady=14)
-        self.var_grafico = tk.BooleanVar(value=True)
-        tk.Checkbutton(c, text="Mostrar gráfico de clusters al identificar", variable=self.var_grafico, bg=PAL["tarjeta"],
-                       fg=PAL["texto"], selectcolor=PAL["tarjeta2"], activebackground=PAL["tarjeta"], activeforeground=PAL["texto"],
-                       font=(FUENTE, 9), anchor="w", justify="left", wraplength=250, bd=0, highlightthickness=0,
-                       cursor="hand2").pack(anchor="w")
-        self.btn_grafico = Boton(c, "Ver gráfico de clusters", command=self.ver_grafico)
-        self.btn_grafico.pack(fill="x", pady=(8, 0))
-        self.btn_grafico.configure(state="disabled")
 
     # =============================================================== utilidades de la ventana
     def log(self, texto):
@@ -380,13 +381,13 @@ class App(tk.Tk):
         self.identificada = False
         self._actualizar_pasos()
         verdad = self.srv.registrar(self.ruta, self.origen_real, self.filtro_txt, via, d)
-        detalle = (f"Distancia al cluster más cercano: {d['distancia']:.3f}  (umbral R = {d['radio']:.2f})")
+        detalle = (f"Puntaje de la identidad más cercana: {d['distancia']:.3f}  (umbral λ = {d['radio']:.2f})")
         if self.reconocida:
             self._resultado("HUELLA RECONOCIDA", VERDE, detalle + "\nDecí IDENTIFICAR para saber de quién es.")
         else:
             self._resultado("NO RECONOCIDA\n(no autorizada)", ROJO, detalle + "\nLa huella queda más lejos que el umbral.")
         veredicto = {"True": "el sistema ACERTÓ", "False": "el sistema SE EQUIVOCÓ", "": "no se conoce el origen"}[verdad]
-        self.log(f"RECONOCER → {'reconocida' if self.reconocida else 'NO reconocida'} (d={d['distancia']:.3f}, R={d['radio']:.2f}); {veredicto}.")
+        self.log(f"RECONOCER → {'reconocida' if self.reconocida else 'NO reconocida'} (puntaje={d['distancia']:.3f}, λ={d['radio']:.2f}); {veredicto}.")
 
     def _identificar(self):
         if self.analisis is None:
@@ -402,7 +403,7 @@ class App(tk.Tk):
             return
         d = self.analisis["decision"]
         n = d["resultado"].replace("identidad_", "")
-        self._resultado(f"IDENTIDAD {n}", AZUL, f"La huella pertenece a la identidad {n}.\nDistancia a su cluster: {d['distancia']:.3f}.")
+        self._resultado(f"IDENTIDAD {n}", AZUL, f"La huella pertenece a la identidad {n}.\nPuntaje: {d['distancia']:.2f} (umbral λ = {d['radio']:.2f}).")
         self.log(f"IDENTIFICAR → Identidad {n}.")
         self.identificada = True
         self._actualizar_pasos()
